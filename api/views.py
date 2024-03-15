@@ -25,7 +25,7 @@ warcraftlogcode = ""
 
 # print("\033[36m ",  + "\033[0m ")
 #
-
+print(headers, settings.WARCRAFTLOGS_OAUTH)
 @csrf_exempt
 def index(request):
     warcraftlogcode = json.loads(request.body)
@@ -42,6 +42,8 @@ def index(request):
     "Ce type a récupéré tant de choses qu'il a besoin d'un camion de déménagement virtuel.",
     "Il a attrapé les récompenses comme s'il était doté d'une compétence de super aimant.",
     "Ce joueur est tellement bien pourvu qu'il pourrait donner des leçons de chance à la loterie."]
+
+    list_healthstones_humoristic_sentence = ["Accro à la pierre de soin"]
 
     datas = {'query': f'''{{ reportData {{
         report(code: "{warcraftlogcode}") {{
@@ -125,4 +127,38 @@ def index(request):
     print("Dictionnaire clé-valeur :")
     print(player_dict)
 
-    return JsonResponse({'hello': 'worldd', "maxupgrade": player_dict, **playersMap, **datas})
+    print("-----------------------------------------------------------------")
+    print("---------------------- HEALTHSTONE USE --------------------------")
+    print("-----------------------------------------------------------------")
+
+    healthStonesUsed = {}
+    print("Use of healthstone during the raid :")
+
+    for event in datas['data']['reportData']['report']['healthStone']['data']:
+        playerID = event['sourceID']
+        healthStonesUsed.setdefault(playerID, 0)
+        healthStonesUsed[playerID] += 1
+
+    print(healthStonesUsed)
+
+    max_healthStones_used = 0
+    player_dict_max_hs = {}
+    max_player_id_hsUsed = None
+
+    for playerID, healthStone in healthStonesUsed.items():
+        if healthStone > max_healthStones_used:
+            max_healthStones_used = healthStone
+            max_player_id_hsUsed = playerID
+
+        print(playersMap[playerID]['name'], "used ", healthStone, "healthStone")
+
+    if max_player_id_hsUsed is not None:
+        player_dict_max_hs[max_player_id] = {
+            'max_healthStones_used': max_healthStones_used,
+            'name': playersMap[max_player_id_hsUsed]['name'],
+            'humoristic_sentence': random.choice(list_healthstones_humoristic_sentence)
+        }
+
+    print(player_dict_max_hs)
+
+    return JsonResponse({'hello': 'worldd', "maxupgrade": player_dict, **playersMap, **datas, "playerWithMaxHsUsed": player_dict_max_hs})

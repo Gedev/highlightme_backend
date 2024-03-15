@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import requests
 
-report_id = 'FR4pHbB8XktYqGzZ'
+report_id = 'Bt3nMLKWHxJ4cpfr'
 api_key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5Yjg0MTZjYS1kODU4LTRmMjItOTQxMS1jMjBjNWE3OGQzOGIiLCJqdGkiOiJlZGJkM2RlNjQ0ZjQzYzkxNzU3N2Y2NTVmYzU3NTg5OGNjZTE3YWExYWQ1MmRlMTM4YzRmMjUxMzg2NGJjZDRiYWE1MDE1M2E5ZGI2Mzg5ZCIsImlhdCI6MTcwOTk4NTE1MS4yNzU4MTIsIm5iZiI6MTcwOTk4NTE1MS4yNzU4MTUsImV4cCI6MTc0MTA4OTE1MS4yNjcyNTksInN1YiI6IiIsInNjb3BlcyI6WyJ2aWV3LXVzZXItcHJvZmlsZSIsInZpZXctcHJpdmF0ZS1yZXBvcnRzIl19.IQrvKFJqR0g1ltu8j868s9Y7ackDtPN7J0cq7P99tWbBsPXivNKaI31VrmbCTzcvxiA_ZnRn3iyB-TbhQOluSeoGejNrjsupFuMCDpVjgi_p9ZzDRYW54K7U-O9UPtVJF5ItbL3rQRn3NZLFKlbwh7WFm-e6IGLbpBK9bhZ3Br-sE-bG6rW9LWWW_NssMam6qqtHg3mFFlAxyiw8Q3rQn7chWIuH30O6nozYprsiqO4-aPT0Ms9zkeTmgV0qN3aoZDeXZXFnSSC8H9bBEc9ppC-UvnxsnSkLSoSvF1RmVkl_lGGtJw-FL30k1sbTm236BMX9seoVUT1E7Uk6xtbS98HcnayvgSdR1vK-giBx69UvkMpLXSxTYbwSYoR1D8trvdoo5Bq3OmFyJb8yRwLTem0Iq4-X4JEUmRL-IymapOe0pMSCcyfQ3sstmRps3w0zbFZoks-641d1pnIP2rDPYDILOC7D4D6WLP-DojCPnwMHg_o6LCYspd4YxwWPb5IYS4r0MDB0ewPr3rKN2ADOsZvgU-gzr3sMRojfBzMIHCSVlsUNVwOkee3oSfsjICHgOwkpP5IihaFEYRskrb_xKFMmKv-VxAwRJApoJWTCmIq1BL5Ao8w7L3gsDKDvHqf2JEHwCibZ4JG3QVBbnCWGY6k-uN7ii-D5PAlJXjntT4Y'
 
 # Set up the API URL
@@ -17,7 +17,7 @@ headers = {
 # code = input(("Enter report code: ")) # Example of code : n6rqwa7ZHjWvY84K
 
 data = {'query': f'''{{ reportData {{
-        report(code: "FR4pHbB8XktYqGzZ") {{
+        report(code: "Bt3nMLKWHxJ4cpfr") {{
             title
             table(startTime: 0, endTime: 99999999999)
             owner {{
@@ -96,41 +96,41 @@ print(newDict.items())
 for playerID, death in newDict.items():
     print(playersMap[playerID]['name'], death, "deaths")
 
-print("\nConclusion : \033[0;31;40m Maximilian cheat \033[0;31;40m")
+print("\nConclusion : Maximilian cheat")
 
 
-# print("-----------------------------------------------------------------")
-# print("---------------------- HEALTHSTONE USE --------------------------")
-# print("-----------------------------------------------------------------")
-#
-# healthStonesUsed = {}
-# print("Use of healthstone during the raid :")
-#
-# for event in data['data']['reportData']['report']['healthStone']['data']:
-#     playerID = event['sourceID']
-#     healthStonesUsed.setdefault(playerID, 0)
-#     healthStonesUsed[playerID] += 1
-#
-# print(healthStonesUsed)
-#
-# for playerID, healthStone in healthStonesUsed.items():
-#     print(playersMap[playerID]['name'], "used ", healthStone, "healthStone")
-#
-#
-# print("-----------------------------------------------------------------")
-# print("---------------------- POTION USE --------------------------")
-# print("-----------------------------------------------------------------")
-#
-# # potionUsed = {}
-#
-# print("Use of potions during the raid :")
-#
-# for event in data['data']['reportData']['report']['potion']['data']:
-#     playerID = event['sourceID']
-#     healthStonesUsed.setdefault(playerID, 0)
-#     healthStonesUsed[playerID] += 1
-#
-# print(healthStonesUsed)
-#
-# for playerID, healthStone in healthStonesUsed.items():
-#     print(playersMap[playerID]['name'], "used ", healthStone, "healthStone")
+print("-----------------------------------------------------------------")
+print("---------------------- HEALTHSTONE USE --------------------------")
+print("-----------------------------------------------------------------")
+
+healthStonesUsed = {}
+print("Use of healthstone during the raid :")
+
+for event in data['data']['reportData']['report']['healthStone']['data']:
+    playerID = event['sourceID']
+    healthStonesUsed.setdefault(playerID, 0)
+    healthStonesUsed[playerID] += 1
+
+print(healthStonesUsed)
+
+for playerID, healthStone in healthStonesUsed.items():
+    print(playersMap[playerID]['name'], "used ", healthStone, "healthStone")
+
+
+print("-----------------------------------------------------------------")
+print("---------------------- POTION USE --------------------------")
+print("-----------------------------------------------------------------")
+
+# potionUsed = {}
+
+print("Use of potions during the raid :")
+
+for event in data['data']['reportData']['report']['potion']['data']:
+    playerID = event['sourceID']
+    healthStonesUsed.setdefault(playerID, 0)
+    healthStonesUsed[playerID] += 1
+
+print(healthStonesUsed)
+
+for playerID, healthStone in healthStonesUsed.items():
+    print(playersMap[playerID]['name'], "used ", healthStone, "healthStone")
