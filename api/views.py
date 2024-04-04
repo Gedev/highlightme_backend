@@ -161,4 +161,52 @@ def index(request):
 
     print(player_dict_max_hs)
 
-    return JsonResponse({'hello': 'worldd', "maxupgrade": player_dict, **playersMap, **datas, "playerWithMaxHsUsed": player_dict_max_hs})
+    print("-----------------------------------------------------------------")
+    print("---------------------- COUNT OF DEATHS --------------------------")
+    print("-----------------------------------------------------------------")
+
+    print("--------------- Encounters & Trash fights -------------------")
+
+    deathByPlayer = {}
+    dict_playerWithMaxDeath = {}
+    max_player_death = 0
+    max_player_death_id = None
+
+    i = 1
+    first_players_to_die = {}
+
+    for event in datas['data']['reportData']['report']['death']['data']:
+        playerID = event['targetID']
+        deathByPlayer.setdefault(playerID, 0)
+        deathByPlayer[playerID] += 1
+
+        fight_id = event['fight']
+        if fight_id not in first_players_to_die:
+            first_players_to_die[fight_id] = {
+                'fight': fight_id,
+                'timestamp': event['timestamp'],
+                'targetID': event['targetID']
+            }
+
+    # Tri décroissant morts
+    newDict = {k: v for k, v in sorted(deathByPlayer.items(), key=lambda item: item[1], reverse=True)}
+    print("\nnewDict sorted: ", newDict)
+
+    print(newDict.items())
+    for playerID, death in newDict.items():
+        print(playersMap[playerID]['name'], death, "deaths")
+        if max_player_death < death:
+            max_player_death = death
+            max_player_death_id = playerID
+
+    if max_player_death_id is not None:
+        dict_playerWithMaxDeath[max_player_death_id] = {
+            'max_player_death': max_player_death,
+            'name': playersMap[max_player_death_id]['name']
+        }
+    print("max player death :", max_player_death)
+
+    print("Death events :", datas['data']['reportData']['report']['death']['data'])
+    print("first players to die :", first_players_to_die)
+
+    return JsonResponse({'hello': 'worldd', "maxupgrade": player_dict, **playersMap, **datas, "playerWithMaxHsUsed": player_dict_max_hs, "deaths": dict_playerWithMaxDeath})
