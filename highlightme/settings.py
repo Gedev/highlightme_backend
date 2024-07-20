@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import json
+import logging
 import os
 from pathlib import Path
 import environ
+
+from highlightme.filters import IgnoreMtimeFilter
 
 env = environ.Env()
 environ.Env.read_env()
@@ -28,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#g&@3l@$#%i&5wl+=)1irsq=g&*vo9dwio)9d6g058vv^0)0ny'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True #TODO : set false for production use
 
 ALLOWED_HOSTS = ["*"]
 
@@ -139,3 +142,55 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 WARCRAFTLOGS_OAUTH = env.json('WARCRAFTLOGS_OAUTH', {})
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'ignore_mtime': {
+            '()': IgnoreMtimeFilter,
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'filters': ['ignore_mtime']
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'django_error.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'myapp': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+# Display a big DEBUG MODE message if debug is enabled
+if DEBUG:
+    logging.getLogger('django').debug("\n" + "#"*50 + "\n" + "DEBUG MODE" + "\n" + "#"*50 + "\n")
+
