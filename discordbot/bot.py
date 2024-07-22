@@ -82,7 +82,7 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
         create_image_with_data(backend_data, filename)
 
         frontend_url = f"http://localhost:4200?report_code={code}"
-        response = f"Preview of the Highlights for the report has been created.\n[View Full Report]({frontend_url})"
+        response = f"Preview of the Highlights for the report {code} has been created.\n[View Full Report]({frontend_url})"
         await interaction.followup.send(response, file=File(filename))
     else:
         await interaction.followup.send(f"Failed to send Report Code {code} to the backend.")
