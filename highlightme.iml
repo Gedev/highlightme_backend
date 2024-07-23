@@ -6,7 +6,7 @@
         <option name="rootFolder" value="$MODULE_DIR$" />
         <option name="settingsModule" value="highlightme/settings.py" />
         <option name="manageScript" value="$MODULE_DIR$/manage.py" />
-        <option name="environment" value="&lt;map/&gt;" />
+        <option name="environment" value="&lt;map&gt;&#10;  &lt;entry&gt;&#10;    &lt;string&gt;WARCRAFTLOGS_OAUTH&lt;/string&gt;&#10;    &lt;string&gt;{&amp;quot;token_type&amp;quot;:&amp;quot;Bearer&amp;quot;,&amp;quot;expires_in&amp;quot;:31104000,&amp;quot;access_token&amp;quot;:&amp;quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5YzRjYjIwOS0zODlkLTRlMDgtODFiYS1jODk4MzAzY2QzMjYiLCJqdGkiOiIwNDE5NzcxNTc5OTA5YjM0NWRhMmM0MWI1ODBmNzAxZTliYjgxMWU1YjQ4NjhjYTBiMmY1MTRkYTU5NjAyYzE0YzBkNjI4NTgyYWEwODMxOSIsImlhdCI6MTcxODc3MDE5NC4yOTIzMjEsIm5iZiI6MTcxODc3MDE5NC4yOTIzMjMsImV4cCI6MTc0OTg3NDE5NC4yODE5MjYsInN1YiI6IiIsInNjb3BlcyI6WyJ2aWV3LXVzZXItcHJvZmlsZSIsInZpZXctcHJpdmF0ZS1yZXBvcnRzIl19.dbzcOks9qmbKLR70-mf801s0UiDJ8kwoJO523KnIPbRhX26Fanzu6WmuhmcPghmF1b5F_y2Z2YJola-eZjcMGI6DoJbMP7ZzSE9ia0OqR5sjpB-3Gj0i68P9TbZJZqRIhOaDJQsaxQx8iDSazrRAu0kA8-BJfmbv4guWnMucib4u4CEJERZmBiiuTzpKRsg8I8F9HeGhRf2Ko5VF7J9tczbCaEyKYY1xe8Rka8vricEGtv4T5dWWKpkkPdf6PK_kuO30gGuZpIaVcFaHKvovVRscZFt8-AeHKuGI2fVg8GOrDqHCt3VY_1knBLeDO2JD9UNdEBZj7f-398bHvGLBz9NobPwfmtafGDKpRPS6VayOX9j8GN8wXBemmSTIwmEdipnsTF-G_Qr81rINrbX6OI7VkCmnsafqKWVQn_xdwUhZArpnszGwML-Bx GgREvCf53Thq6YYuDGvG4BKKd5rMD2DKK1XEnnZvBogjuOeyUfBRHj4pU-1nm7bg7syGZa0c6JS_ejMVj80v0oGPntFpyvPznN0v5f92u3HGo-IO_Th1SGYc1IOl-5_fu73aVNfmFI8fff5LdUf8_i0oK-mrvaBUONQ8QVK1elidmATgQNFzrSQbm0s6DSyrZ5kZn0oeWYtHTrMW7s5N2OBPc5SvJy4m1RgFuwqE6o4UPyGDxo&amp;quot;}&lt;/string&gt;&#10;  &lt;/entry&gt;&#10;&lt;/map&gt;" />
         <option name="doNotUseTestRunner" value="false" />
         <option name="trackFilePattern" value="migrations" />
       </configuration>
@@ -14,16 +14,13 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 3.11 (highlightme)" jdkType="Python SDK" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.12 (highlightme_backend)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
-    <option name="TEMPLATE_FOLDERS">
-      <list>
-        <option value="$MODULE_DIR$/../highlightme\templates" />
-      </list>
-    </option>
   </component>
 </module>

@@ -14,6 +14,8 @@ import logging
 import os
 from pathlib import Path
 import environ
+import colorlog
+from decouple import config
 
 from highlightme.filters import IgnoreMtimeFilter
 
@@ -23,6 +25,7 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ENVIRONMENT = config('ENVIRONMENT', default='development')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -31,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#g&@3l@$#%i&5wl+=)1irsq=g&*vo9dwio)9d6g058vv^0)0ny'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #TODO : set false for production use
+DEBUG = False #TODO : set false for production use
 
 ALLOWED_HOSTS = ["*"]
 
@@ -66,8 +69,7 @@ ROOT_URLCONF = 'highlightme.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,15 +85,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'highlightme.wsgi.application'
 
 
+ENVIRONMENT = config('ENVIRONMENT', default='development')
+
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if ENVIRONMENT == 'production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('POSTGRES_DB'),
+            'USER': config('PG_USER'),
+            'PASSWORD': config('PG_PASSWORD'),
+            'HOST': config('PG_HOST'),
+            'PORT': config('PG_PORT', default='5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -156,6 +172,18 @@ LOGGING = {
             'format': '{levelname} {asctime} {message}',
             'style': '{',
         },
+        'colored': {
+            'format': '{log_color}{levelname} {asctime} {module} {message}',
+            'style': '{',
+            '()': 'colorlog.ColoredFormatter',
+            'log_colors': {
+                'DEBUG': 'yellow',
+                'INFO': 'blue',
+                'WARNING': 'red',
+                'ERROR': 'red',
+                'CRITICAL': 'bold_red',
+            },
+        },
     },
     'filters': {
         'ignore_mtime': {
@@ -166,13 +194,15 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-            'filters': ['ignore_mtime']
+            'formatter': 'colored',
+            'filters': ['ignore_mtime'],
         },
         'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': 'django_error.log',
+            'when': 'midnight',
+            'backupCount': 30,
             'formatter': 'verbose',
         },
     },
@@ -182,9 +212,14 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'myapp': {
+        'api': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.utils.autoreload': {  # Ajoutez cette section pour désactiver les logs de debug pour autoreload
+            'handlers': ['console', 'file'],
+            'level': 'INFO',  # Changez le niveau de log pour éviter les messages DEBUG
             'propagate': False,
         },
     },
