@@ -1,11 +1,13 @@
 module.exports = {
-    content: [
-        './templates/**/*.html',
-        './admin_app/templates/**/*.html',
-        './static/css/*.css',
-    ],
-    theme: {
-        extend: {},
-    },
-    plugins: [],
+  content: [
+    './templates/**/*.html',
+    './admin_app/templates/**/*.html',
+    './static/css/*.css',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+      require('daisyui')
+  ],
 }

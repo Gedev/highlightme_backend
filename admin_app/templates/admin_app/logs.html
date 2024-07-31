@@ -1,0 +1,45 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Logs</title>
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<div class="container mx-auto my-8 p-4 bg-white shadow-lg rounded">
+    <h1 class="text-3xl font-bold mb-4 text-gray-900">HIGHLIGHT LOGS</h1>
+    <table class="min-w-full bg-white table-centered">
+        <thead class="bg-gray-800 text-white">
+        <tr>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">User</th>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Creation date</th>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Guild</th>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Owner</th>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Realm</th>
+            <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Creation status</th>
+        </tr>
+        </thead>
+        <tbody class="text-gray-700">
+        {% for log in logs %}
+            <tr class="bg-gray-100 border-b border-gray-200">
+                <td class="w-1/6 py-3 px-4">log.username</td>
+                <td class="w-1/6 py-3 px-4">{{ log.timestamp }}</td>
+                <td class="w-1/6 py-3 px-4">{{ log.guild_name }}</td>
+                <td class="w-1/6 py-3 px-4">{{ log.report_owner }}</td>
+                <td class="w-1/6 py-3 px-4">
+                    <div class="tooltip">
+                        <img src="{% static 'img/flags/' %}{{ log.realm_icon }}" alt="{{ log.realm }}" class="h-6 w-6">
+                        <span class="tooltiptext">{{ log.realm }}</span>
+                    </div>
+                </td>
+                <td class="w-1/6 py-3 px-4">{{ log.creation_status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
