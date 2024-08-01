@@ -1,0 +1,24 @@
+{
+  "builds": [
+    {
+      "services": [
+        "web"
+      ],
+      "commands": [
+        "npm install",
+        "npm run build"
+      ]
+    }
+  ],
+  "deploys": [
+    {
+      "services": [
+        "web"
+      ],
+      "commands": [
+        "python manage.py migrate",
+        "gunicorn highlightme.wsgi"
+      ]
+    }
+  ]
+}
