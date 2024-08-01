@@ -5,11 +5,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
+from highlightme.enums.creation_status import CreationStatus
 from .highlight_factory import create_highlights
 from .utils.data_fetcher import fetch_global_info, fetch_events
 
 from api.models import HighlightDetails, Highlight
 from .utils.MOCK_data_loader import load_mock_data
+from .utils.log_highlight_creation import log_creation
 
 logger = logging.getLogger('highlightme')
 
@@ -33,6 +35,7 @@ def index(request):
     try:
         request_data = json.loads(request.body)
         warcraftlogcode = request_data.get('wl_report_code')
+        discord_pseudo = request_data.get('discord_pseudo')
 
         if not warcraftlogcode:
             logger.error('warcraftlogcode is required but not provided')
@@ -47,6 +50,9 @@ def index(request):
 
         # Extract combat durations
         fights = global_info_data['data']['reportData']['report']['fightsEncounters']
+        report_owner = global_info_data['data']['reportData']['report']['owner']
+        guild_name = global_info_data['data']['reportData']['report']['guild']
+        realm = global_info_data['data']['reportData']['report']['region']['name']
         print(fights)
         combat_durations = [{"encounterID": fight['encounterID'], "fightID": fight['id'], "startTime": fight['startTime'], "endTime": fight['endTime']} for fight in fights]
 
@@ -89,10 +95,10 @@ def index(request):
                         description=details['description'],
                         img=details['img']
                     )
+                    log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name, CreationStatus.CREATED.value)
             except Exception as e:
                 logger.error(f'Error saving highlight to database: {e}')
-                return JsonResponse({'error': f'Error saving highlight: {str(e)}'}, status=500)
-
+            return JsonResponse({'error': f'Error saving highlight: {str(e)}'}, status=500)
         return JsonResponse(highlights)
 
     except json.JSONDecodeError as json_err:

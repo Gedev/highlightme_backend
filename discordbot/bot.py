@@ -34,6 +34,8 @@ def extract_code_from_url(url: str) -> str:
 @app_commands.command(name="highlight", description="Create the highlight for a Warcraftlogs report")
 @app_commands.describe(report="URL (www.warcraftlogs.com/reports/ZQdNmfwyWPgkAYF9) Or code (ZQdNmfwyWPgkAYF9)")
 async def highlight(interaction: discord.Interaction, report: str = None) -> None:
+    user_pseudo = interaction.user.name
+    print(user_pseudo)
     if report.startswith("http") or report.startswith("www"):
         code = extract_code_from_url(report)
     else:
