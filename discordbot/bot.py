@@ -52,10 +52,6 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
     loading_messages = ["Processing your request",
                         "Processing your request..",
                         "Processing your request...",
-                        "Many stupid things found",
-                        "Many stupid things found.",
-                        "Many stupid things found..",
-                        "Many stupid things found..."
                         ]
 
     for i in range(1):
@@ -65,19 +61,19 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
 
     backend_data = send_to_backend(code)
 
-    loading_messages2 = [
-        "Need more time processing",
-        "No worries, the app can handle it",
-        "But it's quite unusual...",
-        "Have you played the game before ?",
-        "Goddamit, what is that ?",
-        "Nevermind, It's almost finished",
-    ]
-
-    for i in range(1):
-        for message in loading_messages2:
-            await initial_message.edit(content=message)
-            await asyncio.sleep(2)
+    # loading_messages2 = [
+    #     "Need more time processing",
+    #     "No worries, the app can handle it",
+    #     "But it's quite unusual...",
+    #     "Have you played the game before ?",
+    #     "Goddamit, what is that ?",
+    #     "Nevermind, It's almost finished",
+    # ]
+    #
+    # for i in range(1):
+    #     for message in loading_messages2:
+    #         await initial_message.edit(content=message)
+    #         await asyncio.sleep(2)
 
     if backend_data:
         filename = "report_preview.png"

@@ -9,7 +9,7 @@ from highlightme.enums.creation_status import CreationStatus
 from .highlight_factory import create_highlights
 from .utils.data_fetcher import fetch_global_info, fetch_events
 
-from api.models import HighlightDetails, Highlight
+from api.models import HighlightDetails, Highlight, CREATION_STATUS
 from .utils.MOCK_data_loader import load_mock_data
 from .utils.log_highlight_creation import log_creation
 
@@ -85,6 +85,7 @@ def index(request):
                             description=detail['description'],
                             img=detail['img']
                         )
+                        log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name, CreationStatus.CREATED.value)
                 else:
                     HighlightDetails.objects.create(
                         report_id=warcraftlogcode,
@@ -94,10 +95,11 @@ def index(request):
                         description=details['description'],
                         img=details['img']
                     )
-                    log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name, CreationStatus.CREATED.value)
+                    log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name, CREATION_STATUS.CREATED.value)
             except Exception as e:
                 logger.error(f'Error saving highlight to database: {e}')
-            return JsonResponse({'error': f'Error saving highlight: {str(e)}'}, status=500)
+                log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name, CREATION_STATUS.FAILED.value)
+                return JsonResponse({'error': f'Error saving highlight: {str(e)}'}, status=500)
         return JsonResponse(highlights)
 
     except json.JSONDecodeError as json_err:
