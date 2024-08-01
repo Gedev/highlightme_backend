@@ -6,7 +6,8 @@
       ],
       "commands": [
         "npm install",
-        "npm run build"
+        "npm run build",
+        "python manage.py migrate"
       ]
     }
   ],
