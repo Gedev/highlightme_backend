@@ -15,7 +15,7 @@ class QueryBuilder:
         self.alias_count += 1
         alias = f"event_{self.alias_count}"  # Generate unique aliases
         query_fragment = f'''
-            {alias}: events(dataType: DamageDone, startTime: {float(start_time)}, endTime: {float(end_time)}, limit: 50, )
+            {alias}: events(dataType: DamageDone, startTime: {float(start_time)}, endTime: {float(end_time)}, limit: 50)
                 {{
                     data
                 }}

@@ -83,7 +83,7 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
         filename = "report_preview.png"
         create_image_with_data(backend_data, filename)
 
-        frontend_url = f"http://localhost:4200?report_code={code}"
+        frontend_url = f"https://raid-highlights.netlify.app/?report_code={code}"
         response = f"Preview of the Highlights for the report {code} has been created.\n[View Full Report]({frontend_url})"
         await interaction.followup.send(response, file=File(filename))
     else:
@@ -230,6 +230,7 @@ async def send_message(message: Message, response: str, filename: str) -> None:
 
 def send_to_backend(report_code: str) -> Dict[str, Any]:
     backend_url = "http://localhost:8000/api/"
+    backend_url = "https://highlightmebackend-production.up.railway.app/api/"
     data = {"wl_report_code": report_code}
 
     try:

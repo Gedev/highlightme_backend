@@ -33,7 +33,7 @@ print("Settings Warcraftlogs_oauth :", settings.WARCRAFTLOGS_OAUTH.get('access_t
 def index(request):
     print("Index called")
     try:
-        request_data = json.loads(request.body)
+        request_data = json.loads(request.body.decode('utf-8'))
         warcraftlogcode = request_data.get('wl_report_code')
         discord_pseudo = request_data.get('discord_pseudo')
 
@@ -66,7 +66,6 @@ def index(request):
         except Exception as e:
             logger.error(f'Error fetching events data: {e}')
             return JsonResponse({'error': f'Error fetching events data: {str(e)}'}, status=500)
-        print(events_data)
 
         # Create highlights
         highlights = create_highlights(events_data, global_info_data)

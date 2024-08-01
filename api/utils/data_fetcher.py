@@ -50,6 +50,7 @@ def fetch_global_info(warcraftlogcode, headers):
     print("Query global info : ", query)
     # RESPONSE
     response = requests.post(API_URL, headers=headers, json={'query': query})
+    response.encoding = 'utf-8'
     if response.status_code == 200:
         return response.json()
     else:
@@ -69,6 +70,7 @@ def fetch_events(warcraftlogcode, headers, combat_durations):
 
     # RESPONSE
     response = requests.post(API_URL, headers=headers, json={'query': graphql_query})
+    response.encoding = 'utf-8'
     if response.status_code == 200:
         try:
             data = response.json()
