@@ -26,6 +26,9 @@ def fetch_global_info(warcraftlogcode, headers):
                 owner {{
                     name
                 }}
+                region {{
+                    name
+                }}
                 fights {{
                     encounterID
                     id
