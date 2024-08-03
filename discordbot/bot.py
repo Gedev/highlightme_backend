@@ -34,8 +34,8 @@ def extract_code_from_url(url: str) -> str:
 @app_commands.command(name="highlight", description="Create the highlight for a Warcraftlogs report")
 @app_commands.describe(report="URL (www.warcraftlogs.com/reports/ZQdNmfwyWPgkAYF9) Or code (ZQdNmfwyWPgkAYF9)")
 async def highlight(interaction: discord.Interaction, report: str = None) -> None:
-    user_pseudo = interaction.user.name
-    print(user_pseudo)
+    discord_pseudo = interaction.user.name
+    print(discord_pseudo)
     if report.startswith("http") or report.startswith("www"):
         code = extract_code_from_url(report)
     else:
@@ -59,7 +59,7 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
             await initial_message.edit(content=message)
             await asyncio.sleep(0.5)
 
-    backend_data = send_to_backend(code)
+    backend_data = send_to_backend(code, discord_pseudo)
 
     # loading_messages2 = [
     #     "Need more time processing",
@@ -224,13 +224,16 @@ async def send_message(message: Message, response: str, filename: str) -> None:
         print(e)
 
 
-def send_to_backend(report_code: str) -> Dict[str, Any]:
-    backend_url = "http://localhost:8000/api/"
+def send_to_backend(report_code: str, discord_pseudo: str) -> Dict[str, Any]:
+    # backend_url = "http://localhost:8000/api/"
     backend_url = "https://highlightmebackend-production.up.railway.app/api/"
-    data = {"wl_report_code": report_code}
+    payload = {
+        'wl_report_code': report_code,
+        'discord_pseudo': discord_pseudo
+    }
 
     try:
-        response = requests.post(backend_url, json=data)
+        response = requests.post(backend_url, json=payload)
         response.raise_for_status()
         print(f"Successfully sent report code to backend: {response.json()}")
         return response.json()
