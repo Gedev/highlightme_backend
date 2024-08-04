@@ -9,7 +9,8 @@ class QueryBuilder:
         self.warcraftlogcode = warcraftlogcode
         self.access_token = access_token
         self.query_fragments = []
-        self.alias_count = 0 # Count to generate unique aliases "event"
+        self.alias_count = 0  # Count to generate unique aliases "event"
+        self.encounter_fragments = []  # To store encounter name queries
 
     def add_fight(self, start_time, end_time, fight_id):
         self.alias_count += 1
@@ -23,6 +24,20 @@ class QueryBuilder:
         '''
         self.query_fragments.append(query_fragment)
 
+    def add_encounter(self, encounter_id):
+        """
+        Adds a GraphQL query fragment for fetching the name of a boss using its encounter ID.
+        """
+        encounter_query_fragment = f'''
+        encounter_{encounter_id}: worldData {{
+            encounter(id: {encounter_id}) {{
+                id
+                name
+            }}
+        }}
+        '''
+        self.encounter_fragments.append(encounter_query_fragment)
+
     def build_query(self):
         full_query = f'''
         {{
@@ -33,8 +48,10 @@ class QueryBuilder:
                     deathEvents: events(killType: Kills, startTime: 0, endTime: 999999999, dataType: Deaths) {{
                         data
                     }}
+                    rankings
                 }}
             }}
+            {"".join(self.encounter_fragments)}
         }}
         '''
         logger.debug(f"Generated GraphQL query: {full_query}")

@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -7,11 +8,14 @@ from django.conf import settings
 
 from highlightme.enums.creation_status import CreationStatus
 from .highlight_factory import create_highlights
+from .highlights.rankings import display_player_parses, calculate_best_parse_averages
 from .utils.data_fetcher import fetch_global_info, fetch_events
 
 from api.models import HighlightDetails, Highlight, CREATION_STATUS
 from .utils.MOCK_data_loader import load_mock_data
+from .utils.debug_encoding import inspect_data
 from .utils.log_highlight_creation import log_creation
+from .utils.query_builder import QueryBuilder
 
 logger = logging.getLogger('highlightme')
 
@@ -48,13 +52,19 @@ def index(request):
         else:
             global_info_data = fetch_global_info(warcraftlogcode, headers)
 
+        # print(json.dumps(global_info_data, ensure_ascii=False, indent=2))
+
         # Extract combat durations
         fights = global_info_data['data']['reportData']['report']['fightsEncounters']
         report_owner = global_info_data['data']['reportData']['report']['owner']
         guild_name = global_info_data['data']['reportData']['report']['guild']
         realm = global_info_data['data']['reportData']['report']['region']['name']
-        print(fights)
-        combat_durations = [{"encounterID": fight['encounterID'], "fightID": fight['id'], "startTime": fight['startTime'], "endTime": fight['endTime']} for fight in fights]
+        combat_durations = [{
+            "encounterID": fight['encounterID'],
+            "fightID": fight['id'],
+            "startTime": fight['startTime'],
+            "endTime": fight['endTime']
+        } for fight in fights]
 
         # Fetch events data
         try:
@@ -63,10 +73,27 @@ def index(request):
                 print("DEBUG MODE : mock_events.json stored in events_data")
             else:
                 events_data = fetch_events(warcraftlogcode, headers, combat_durations)
+
+                # Extract boss names from the response
+                boss_names = {}
+                for key, value in events_data['data'].items():
+                    if key.startswith("encounter_"):
+                        encounter_data = value.get('encounter', {})
+                        encounter_id = encounter_data.get('id')
+                        boss_name = encounter_data.get('name', 'Unknown Boss')
+                        boss_names[encounter_id] = boss_name
+                print(boss_names)
+                # Calculate and display the best parse averages and legendary parses, using boss names
+                best_player, legendary_parses = calculate_best_parse_averages(events_data, boss_names)
         except Exception as e:
             logger.error(f'Error fetching events data: {e}')
             return JsonResponse({'error': f'Error fetching events data: {str(e)}'}, status=500)
 
+        # Inspect player names for encoding issues
+        players = [player['name'] for player in events_data.get('players', [])]
+        inspect_data(players)
+
+        # print(events_data)
         # Create highlights
         highlights = create_highlights(events_data, global_info_data)
 

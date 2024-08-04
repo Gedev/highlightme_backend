@@ -12,6 +12,7 @@ API_URL = 'https://www.warcraftlogs.com/api/v2'
 
 logger = logging.getLogger('highlightme')
 
+
 # FETCH all the required data (PREREQUISITES) to create the SECOND QUERY to the API
 def fetch_global_info(warcraftlogcode, headers):
     query = f'''
@@ -47,7 +48,7 @@ def fetch_global_info(warcraftlogcode, headers):
         }}
     }}
     '''
-    print("Query global info : ", query)
+    # print("Query global info : ", query)
     # RESPONSE
     response = requests.post(API_URL, headers=headers, json={'query': query})
     response.encoding = 'utf-8'
@@ -55,6 +56,7 @@ def fetch_global_info(warcraftlogcode, headers):
         return response.json()
     else:
         raise Exception(f"Error fetching global info: {response.status_code} - {response.text}")
+
 
 def fetch_events(warcraftlogcode, headers, combat_durations):
     # DEVELOPEMENT MODE
@@ -64,7 +66,13 @@ def fetch_events(warcraftlogcode, headers, combat_durations):
     query_builder = QueryBuilder(warcraftlogcode, headers['Authorization'].split(' ')[1])
 
     for combat in combat_durations:
-        query_builder.add_fight(combat['startTime'], combat['endTime'], combat['fightID'])
+        start_time = combat['startTime']
+        end_time = combat['endTime']
+        fight_id = combat['fightID']
+        encounter_id = combat['encounterID']
+
+        query_builder.add_fight(start_time, end_time, fight_id)
+        query_builder.add_encounter(encounter_id)
 
     graphql_query = query_builder.build_query()
 
