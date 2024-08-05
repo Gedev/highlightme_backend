@@ -11,7 +11,7 @@ from .highlight_factory import create_highlights
 from .highlights.rankings import display_player_parses, calculate_best_parse_averages
 from .utils.data_fetcher import fetch_global_info, fetch_events
 
-from api.models import HighlightDetails, Highlight, CREATION_STATUS
+from api.models import HighlightDetails, Highlight, CREATION_STATUS, IndividualHighlight
 from .utils.MOCK_data_loader import load_mock_data
 from .utils.debug_encoding import inspect_data
 from .utils.log_highlight_creation import log_creation
@@ -74,17 +74,38 @@ def index(request):
             else:
                 events_data = fetch_events(warcraftlogcode, headers, combat_durations)
 
-                # Extract boss names from the response
-                boss_names = {}
-                for key, value in events_data['data'].items():
-                    if key.startswith("encounter_"):
-                        encounter_data = value.get('encounter', {})
-                        encounter_id = encounter_data.get('id')
-                        boss_name = encounter_data.get('name', 'Unknown Boss')
-                        boss_names[encounter_id] = boss_name
-                print(boss_names)
-                # Calculate and display the best parse averages and legendary parses, using boss names
-                best_player, legendary_parses = calculate_best_parse_averages(events_data, boss_names)
+            # Extract boss names from the response
+            boss_names = {}
+            for key, value in events_data['data'].items():
+                if key.startswith("encounter_"):
+                    encounter_data = value.get('encounter', {})
+                    encounter_id = encounter_data.get('id')
+                    boss_name = encounter_data.get('name', 'Unknown Boss')
+                    boss_names[encounter_id] = boss_name
+            print(boss_names)
+
+            # Calculate parses and highlights
+            best_dps_player, best_hps_player, legendary_parses, fight_highlights = calculate_best_parse_averages(events_data, boss_names)
+
+            # Prepare player stats for saving to the database
+            player_stats = {}
+            for parse in legendary_parses:
+                player_name = parse['name']
+                rank_percent = parse['rank_percent']
+
+                if player_name not in player_stats:
+                    player_stats[player_name] = {
+                        'total_legendary_parses': 0,
+                        'best_legendary_parse': 0
+                    }
+
+                # Update the stats
+                player_stats[player_name]['total_legendary_parses'] += 1
+                player_stats[player_name]['best_legendary_parse'] = max(player_stats[player_name]['best_legendary_parse'], rank_percent)
+
+            # Save individual highlights to the database
+            save_individual_highlights(warcraftlogcode, player_stats)
+            display_player_parses(events_data)
         except Exception as e:
             logger.error(f'Error fetching events data: {e}')
             return JsonResponse({'error': f'Error fetching events data: {str(e)}'}, status=500)
@@ -137,7 +158,25 @@ def index(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-
+def save_individual_highlights(report_id, player_stats):
+    """
+    Save the legendary parses information to the database for each player.
+    """
+    for player_name, stats in player_stats.items():
+        if stats['total_legendary_parses'] > 0:
+            # Create or update the individual highlight record
+            highlight, created = IndividualHighlight.objects.update_or_create(
+                report_id=report_id,
+                player_name=player_name,
+                defaults={
+                    'total_legendary_parses': stats['total_legendary_parses'],
+                    'best_legendary_parse': stats['best_legendary_parse']
+                }
+            )
+            if created:
+                print(f"Created new highlight for player {player_name}")
+            else:
+                print(f"Updated highlight for player {player_name}")
 
 
 

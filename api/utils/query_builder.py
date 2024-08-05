@@ -48,7 +48,8 @@ class QueryBuilder:
                     deathEvents: events(killType: Kills, startTime: 0, endTime: 999999999, dataType: Deaths) {{
                         data
                     }}
-                    rankings
+                    dpsRankings: rankings(playerMetric: dps)
+                    hpsRankings: rankings(playerMetric: hps)
                 }}
             }}
             {"".join(self.encounter_fragments)}
