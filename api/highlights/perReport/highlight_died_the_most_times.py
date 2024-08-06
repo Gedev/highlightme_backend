@@ -11,7 +11,6 @@ def highlight_died_the_most_times(datas):
             death_counts[player_name] = 0
         death_counts[player_name] += 1
 
-    # Trouver le joueur avec le plus grand nombre de décès
     if death_counts:
         most_deaths_player = max(death_counts, key=death_counts.get)
         most_deaths_count = death_counts[most_deaths_player]
@@ -19,12 +18,19 @@ def highlight_died_the_most_times(datas):
         most_deaths_player = None
         most_deaths_count = 0
 
-    # Retourner les résultats sous forme de dictionnaire
-    return {
-        "playerName": most_deaths_player,
-        "deathCount": most_deaths_count,
-        "description": "Player died the most times"
-    }
+    if most_deaths_player is not None:
+        most_deaths_highlight = {
+            "playerName": most_deaths_player,
+            "deathCount": most_deaths_count,
+            "description": "Player died the most times"
+        }
+    else:
+        most_deaths_highlight = None
+
+    return most_deaths_highlight
+
+
+
 
 # Exemple d'utilisation
 if __name__ == "__main__":

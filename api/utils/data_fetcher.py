@@ -30,19 +30,19 @@ def fetch_global_info(warcraftlogcode, headers):
                 region {{
                     name
                 }}
-                fights {{
-                    encounterID
-                    id
-                    startTime
-                    endTime
-                }}
-                fightsEncounters : fights(killType: Encounters) {{
+                fightsEncounters : fights(killType: Kills) {{
                     encounterID
                     id
                     startTime
                     endTime
                     difficulty
                     friendlyPlayers
+                    gameZone {{
+                        name
+                    }}
+                }}
+                zone {{
+                    name
                 }}
             }}
         }}
@@ -58,23 +58,29 @@ def fetch_global_info(warcraftlogcode, headers):
         raise Exception(f"Error fetching global info: {response.status_code} - {response.text}")
 
 
-def fetch_events(warcraftlogcode, headers, combat_durations):
+def fetch_events(warcraftlogcode, headers, fights, raid_difficulty):
     # DEVELOPEMENT MODE
     if settings.DEBUG:
         return load_mock_data('mock_events.json')
 
     query_builder = QueryBuilder(warcraftlogcode, headers['Authorization'].split(' ')[1])
 
-    for combat in combat_durations:
-        start_time = combat['startTime']
-        end_time = combat['endTime']
-        fight_id = combat['fightID']
-        encounter_id = combat['encounterID']
+    fight_ids = []
 
-        query_builder.add_fight(start_time, end_time, fight_id)
-        query_builder.add_encounter(encounter_id)
+    for fight in fights:
+        start_time = fight['startTime']
+        end_time = fight['endTime']
+        fight_id = fight['id']
+        encounter_id = fight['encounterID']
+        difficulty = fight['difficulty']
 
-    graphql_query = query_builder.build_query()
+        # Ajouter l'ID du combat à la liste
+        fight_ids.append(fight_id)
+
+        query_builder.add_fight(start_time, end_time, fight_id, raid_difficulty)
+        query_builder.add_encounter(encounter_id, difficulty)
+
+    graphql_query = query_builder.build_query(raid_difficulty, fight_ids)
 
     # RESPONSE
     response = requests.post(API_URL, headers=headers, json={'query': graphql_query})

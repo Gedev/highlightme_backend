@@ -1,5 +1,5 @@
 TRANSLATIONS = {
-    "Less Trash Damage": "Moins de dégâts sur les mobs",
+    "Less Trash Damage": "Moins de dégâts sur les trashs",
     "Max Healthstones": "Utilisation maximale des pierres de soin",
     "Max Health stones used": "Pierres de soin utilisées au maximum",
     "Max Potions": "Potions utilisées au maximum",

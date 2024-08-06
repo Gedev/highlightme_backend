@@ -1,7 +1,6 @@
 def highlight_less_trash_damage(events_data):
     # Identifier les healers
     healers = {healer['name'] for healer in events_data['data']['reportData']['report']['table']['data']['playerDetails']['healers']}
-    print("==== HIGHLIGHT : THE LESS TRASH DAMAGE || Healers : ", healers)
 
     # Initialiser les variables pour trouver le joueur avec le total le plus bas parmi les non-healers
     min_total = float('inf')

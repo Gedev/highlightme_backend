@@ -21,10 +21,12 @@ def highlight_solo_heal(events_data, global_info_data):
         if difficulty == "LFR":
             continue
 
-        player_details = events_data['data']['reportData']['report'].get(f'playerDetails_{fight["id"]}', {}).get('data', {}).get('playerDetails', {})
+        player_details = events_data['data']['reportData']['report'].get(f'playerDetails_{fight["id"]}', {}).get('data',
+                                                                                                                 {}).get(
+            'playerDetails', {})
         healers = player_details.get('healers', [])
 
-        if len(healers) == 1:
+        if len(healers) == 1 and healers[0].get('name'):
             rarity = "Common"
             if difficulty == 'Normal':
                 rarity = "Bronze"
@@ -42,4 +44,4 @@ def highlight_solo_heal(events_data, global_info_data):
                 "img": "solo_heal.png"
             })
 
-    return highlights
+    return highlights if highlights else None

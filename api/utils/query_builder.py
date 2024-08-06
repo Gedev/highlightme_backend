@@ -12,11 +12,11 @@ class QueryBuilder:
         self.alias_count = 0  # Count to generate unique aliases "event"
         self.encounter_fragments = []  # To store encounter name queries
 
-    def add_fight(self, start_time, end_time, fight_id):
+    def add_fight(self, start_time, end_time, fight_id, difficulty):
         self.alias_count += 1
         alias = f"event_{self.alias_count}"  # Generate unique aliases
         query_fragment = f'''
-            {alias}: events(dataType: DamageDone, startTime: {float(start_time)}, endTime: {float(end_time)}, limit: 50)
+            {alias}: events(dataType: DamageDone, startTime: {float(start_time)}, endTime: {float(end_time)}, limit: 50, difficulty : {difficulty})
                 {{
                     data
                 }}
@@ -24,32 +24,37 @@ class QueryBuilder:
         '''
         self.query_fragments.append(query_fragment)
 
-    def add_encounter(self, encounter_id):
-        """
-        Adds a GraphQL query fragment for fetching the name of a boss using its encounter ID.
-        """
-        encounter_query_fragment = f'''
-        encounter_{encounter_id}: worldData {{
-            encounter(id: {encounter_id}) {{
-                id
-                name
+    def add_encounter(self, encounter_id, difficulty):
+        # Create a unique alias using the encounter ID and difficulty
+        alias = f"encounter_{encounter_id}_diff_{difficulty}"
+        query_fragment = f'''
+            {alias}: worldData {{
+                encounter(id: {encounter_id}) {{
+                    id
+                    name
+                    zone {{
+                        name
+                        expansion {{
+                            name
+                        }}
+                    }}
+                }}
             }}
-        }}
         '''
-        self.encounter_fragments.append(encounter_query_fragment)
+        self.encounter_fragments.append(query_fragment)
 
-    def build_query(self):
+    def build_query(self, difficulty, fightIDs):
         full_query = f'''
         {{
             reportData {{
                 report(code: "{self.warcraftlogcode}") {{
-                    table(startTime: 0, endTime: 999999999, killType: All)
+                    table(fightIDs: {fightIDs}, killType: All, difficulty: {difficulty})
                     {"".join(self.query_fragments)}
-                    deathEvents: events(killType: Kills, startTime: 0, endTime: 999999999, dataType: Deaths) {{
+                    deathEvents: events(killType: Kills, startTime: 0, endTime: 999999999, dataType: Deaths, difficulty: {difficulty}) {{
                         data
                     }}
-                    dpsRankings: rankings(playerMetric: dps)
-                    hpsRankings: rankings(playerMetric: hps)
+                    dpsRankings: rankings(playerMetric: dps, difficulty: {difficulty})
+                    hpsRankings: rankings(playerMetric: hps, difficulty: {difficulty})
                 }}
             }}
             {"".join(self.encounter_fragments)}

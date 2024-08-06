@@ -14,7 +14,7 @@ def highlight_solo_tanking(events_data, global_info_data):
         player_details = events_data['data']['reportData']['report'].get(f'playerDetails_{fight["id"]}', {}).get('data', {}).get('playerDetails', {})
         tanks = player_details.get('tanks', [])
 
-        if len(tanks) == 1:
+        if len(tanks) == 1 and tanks[0].get('name'):
             rarity = "Common"
             if difficulty == 'Normal':
                 rarity = "Bronze"
@@ -32,4 +32,4 @@ def highlight_solo_tanking(events_data, global_info_data):
                 "img": "solo_tank.png"
             })
 
-    return highlights
+    return highlights if highlights else None

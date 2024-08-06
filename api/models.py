@@ -11,6 +11,14 @@ class Highlight(models.Model):
         return self.name
 
 
+class Difficulties(models.IntegerChoices):
+    LFR = 1, "LFR"
+    FLEX = 2, "Flex"
+    NORMAL = 3, "Normal"
+    HEROIC = 4, "Heroic"
+    MYTHIC = 5, "Mythic"
+
+
 class HighlightDetails(models.Model):
     report_id = models.CharField(max_length=255)
     type = models.ForeignKey(Highlight, on_delete=models.CASCADE)
@@ -20,9 +28,11 @@ class HighlightDetails(models.Model):
     description = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
     img = models.CharField(max_length=255, blank=True)
+    difficulty = models.IntegerField(choices=Difficulties.choices, null=True, blank=True)
+    zone_name = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.get_difficulty_display()})"
 
 
 class CREATION_STATUS(models.TextChoices):
@@ -47,6 +57,7 @@ class HighlightLogs(models.Model):
 class IndividualHighlight(models.Model):
     report_id = models.CharField(max_length=255)
     player_name = models.CharField(max_length=255)
+    difficulty = models.IntegerField(choices=Difficulties.choices, null=True, blank=True)
 
     # Highlights for legendary parses
     total_legendary_parses = models.IntegerField(default=0)
