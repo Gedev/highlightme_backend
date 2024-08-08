@@ -5,3 +5,7 @@ DIFFICULTY_MAP = {
     4: "Heroic",
     5: "Mythic"
 }
+
+
+def get_difficulty_name(difficulty_value):
+    return DIFFICULTY_MAP.get(difficulty_value, "Unknown Difficulty")
