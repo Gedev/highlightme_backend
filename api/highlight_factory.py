@@ -31,21 +31,21 @@ def create_highlights(events_data, global_info_data):
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
 
     # Return the highlights
-    highlights = {
-        "pull_before_tanks":
-            {
-                "player": pull_before_tanks_highlights["playerName"],
-                "fight": pull_before_tanks_highlights["pullCount"],
-                "sourceID": pull_before_tanks_highlights["playerID"],
-                "description": "Player pulled before tank the most",
-                "img": "Gnomish-grave-digger.jpg"
-            },
-    }
+    highlights = {}
+
+    if pull_before_tanks_highlights is not None:
+        highlights["pull_before_tanks"] = {
+            "player": pull_before_tanks_highlights["playerName"],
+            "fight": pull_before_tanks_highlights["pullCount"],
+            "sourceID": pull_before_tanks_highlights["playerID"],
+            "description": "Player pulled before tank the most",
+            "img": "Gnomish-grave-digger.jpg"
+        }
 
     if highlight_less_trash_damage is not None:
         highlights["less_trash_damage"] = {
             "player": min_player,
-            "total": min_total,
+            "highlight_value": min_total,
             "description": "Less Trash Damage",
             "img": "less_damage_trash.png"
         }
@@ -55,29 +55,27 @@ def create_highlights(events_data, global_info_data):
     if most_deaths_player_highlight is not None:
         highlights["max_deaths"] = {
             "player": most_deaths_player_highlight["playerName"],
-            "deathCount": most_deaths_player_highlight["deathCount"],
+            "highlight_value": most_deaths_player_highlight["deathCount"],
             "description": most_deaths_player_highlight["description"],
             "img": "Gnomish-grave-digger.jpg"
         }
     else:
         print("No most deaths")
 
-    # Ajouter le highlight "special death" si des joueurs sont morts de lave
     if lava_death_highlight["lavaDeathCount"] > 0:
         highlights["lava_death"] = {
             "player": lava_death_highlight["playerName"],
-            "deathCount": lava_death_highlight["lavaDeathCount"],
+            "highlight_value": lava_death_highlight["lavaDeathCount"],
             "description": lava_death_highlight["description"],
             "img": "lava_death.png"
         }
     else:
         print("No lava death")
 
-    # Ajouter le highlight "potion death" si des joueurs sont morts de potion
     if potion_death_highlight["potionDeathCount"] > 0:
         highlights["potion_death"] = {
             "player": potion_death_highlight["playerName"],
-            "deathCount": potion_death_highlight["potionDeathCount"],
+            "highlight_value": potion_death_highlight["potionDeathCount"],
             "description": potion_death_highlight["description"],
             "img": "potion_death.png"
         }
@@ -87,7 +85,7 @@ def create_highlights(events_data, global_info_data):
     if most_potions_player is not None:
         highlights['max_potions'] = {
             'player': most_potions_player['name'],
-            'potionUse': most_potions_player['potionUse'],
+            'highlight_value': most_potions_player['potionUse'],
             'description': 'Max Potions',
             'img': 'elf_drinking_potion.png'
         }
@@ -95,7 +93,7 @@ def create_highlights(events_data, global_info_data):
     if most_healthstones_player is not None:
         highlights['max_healthstones'] = {
             'player': most_healthstones_player['name'],
-            'healthstoneUse': most_healthstones_player['healthstoneUse'],
+            'highlight_value': most_healthstones_player['healthstoneUse'],
             'description': 'Max Health stones used',
             'img': 'elf-drinking.jpg'
         }
