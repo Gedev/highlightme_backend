@@ -142,7 +142,8 @@ def index(request):
                                         description=detail['description'],
                                         img=detail['img'],
                                         difficulty=difficulty_id,
-                                        zone_name=zone_name
+                                        zone_name=zone_name,
+                                        highlight_value=details['highlight_value']
                                     )
                                     log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name,
                                                  CreationStatus.CREATED.value)
@@ -155,7 +156,8 @@ def index(request):
                                     description=details['description'],
                                     img=details['img'],
                                     difficulty=difficulty_id,
-                                    zone_name=zone_name
+                                    zone_name=zone_name,
+                                    highlight_value=details['highlight_value']
                                 )
                                 log_creation(discord_pseudo, report_owner, realm, highlight_type, guild_name,
                                              CREATION_STATUS.CREATED.value)
