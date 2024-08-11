@@ -10,6 +10,7 @@ from highlightme.enums.creation_status import CreationStatus
 from .highlight_factory import create_highlights
 from .highlights.rankings import display_player_parses, calculate_best_parse_averages
 from .services.report_analyser_service import analyze_report
+from .services.report_eligibility_service import ReportEligibilityService
 from .utils.data_fetcher import fetch_global_info, fetch_events
 
 from api.models import HighlightDetails, Highlight, CREATION_STATUS, IndividualHighlight
@@ -83,6 +84,10 @@ def index(request):
 
                     # Fetch events data for the current difficulty
                     events_data = fetch_events(warcraftlogcode, headers, difficulty_fights, difficulty)
+
+                    # Step 1: Validate the report's eligibility for highlight creation
+                    if not ReportEligibilityService.is_report_eligible(events_data, global_info_data):
+                        return JsonResponse({'error': 'Report disqualified due to boost group detection or other criteria'}, status=400)
 
                     # Extract boss names from the response for the current difficulty
                     boss_names = {}
