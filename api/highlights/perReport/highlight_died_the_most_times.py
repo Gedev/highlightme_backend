@@ -22,7 +22,8 @@ def highlight_died_the_most_times(datas):
         most_deaths_highlight = {
             "playerName": most_deaths_player,
             "deathCount": most_deaths_count,
-            "description": "Player died the most times"
+            "description": "Player died the most times",
+            "highlight_value": most_deaths_count
         }
     else:
         most_deaths_highlight = None

@@ -198,29 +198,21 @@ LOGGING = {
             'formatter': 'colored',
             'filters': ['ignore_mtime'],
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'django_error.log',
-            'when': 'midnight',
-            'backupCount': 30,
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'api': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'django.utils.autoreload': {  # Ajoutez cette section pour désactiver les logs de debug pour autoreload
-            'handlers': ['console', 'file'],
-            'level': 'INFO',  # Changez le niveau de log pour éviter les messages DEBUG
+        'django.utils.autoreload': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': False,
         },
     },

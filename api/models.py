@@ -30,6 +30,7 @@ class HighlightDetails(models.Model):
     img = models.CharField(max_length=255, blank=True)
     difficulty = models.IntegerField(choices=Difficulties.choices, null=True, blank=True)
     zone_name = models.CharField(max_length=255, null=True, blank=True)
+    highlight_value = models.FloatField()
 
     def __str__(self):
         return f"{self.title} ({self.get_difficulty_display()})"

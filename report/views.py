@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from api.models import HighlightDetails, IndividualHighlight
 import json
 
+from api.utils.difficulties import get_difficulty_name
 from report.translations import TRANSLATIONS
 
 
@@ -30,14 +31,24 @@ def translate(highlights, language="fr"):
 def get_highlights(request, **kwargs):
     try:
         report_code = kwargs.get('reportcode')
+        difficulty = request.GET.get('difficulty')
         if report_code:
             # Fetch combat highlights
-            combat_highlights = HighlightDetails.objects.filter(report_id=report_code).values()
+            combat_highlights = HighlightDetails.objects.filter(report_id=report_code, difficulty=difficulty).values()
             combat_highlights_list = list(combat_highlights)
 
             # Fetch individual highlights
-            individual_highlights = IndividualHighlight.objects.filter(report_id=report_code).values()
+            individual_highlights = IndividualHighlight.objects.filter(report_id=report_code, difficulty=difficulty).values()
             individual_highlights_list = list(individual_highlights)
+
+            # Extract zone name and difficulty from combat highlights (assuming all have the same zone and difficulty)
+            if combat_highlights_list:
+                zone_name = combat_highlights_list[0].get('zone_name', 'Unknown Zone')
+                difficulty_value = combat_highlights_list[0].get('difficulty', 'Unknown Difficulty')
+                difficulty_name = get_difficulty_name(difficulty_value)
+            else:
+                zone_name = 'Unknown Zone'
+                difficulty_name = 'Unknown Difficulty'
 
             # Detect language and translate highlights
             language = detect_language(request)
@@ -46,6 +57,8 @@ def get_highlights(request, **kwargs):
             translated_combat_highlights = translate(combat_highlights_list, language=language)
 
             return JsonResponse({
+                "zone_name": zone_name,
+                "difficulty": difficulty_name,
                 "combat_highlights": translated_combat_highlights,
                 "individual_highlights": individual_highlights_list
             }, safe=False)
