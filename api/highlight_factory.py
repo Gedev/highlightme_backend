@@ -8,6 +8,7 @@ from api.highlights.perReport.highlight_less_trash_damage import highlight_less_
 from api.highlights.perReport.highlight_max_healthstones import highlight_max_healthstones
 from api.highlights.perReport.highlight_pull_before_tanks import highlight_pull_before_tanks
 from api.highlights.perReport.highlight_lava_death import highlight_lava_death
+from api.highlights.perReport.highlight_same_race import highlight_same_race_players
 
 
 # api/highlight_factory.py
@@ -29,6 +30,7 @@ def create_highlights(events_data, global_info_data):
     # Special Comp
     solo_heal_highlight = highlight_solo_heal(events_data, global_info_data)
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
+    same_race_highlights = highlight_same_race_players(events_data)
 
     # Return the highlights
     highlights = {}
@@ -117,6 +119,14 @@ def create_highlights(events_data, global_info_data):
         highlights["solo_healing"] = solo_heal_highlight
     else:
         print("No solo healing highlight")
+
+    for highlight in same_race_highlights:
+        highlights[f"same_race_{highlight['race']}"] = {
+            "players": highlight['players'],
+            "highlight_value": highlight['highlight_value'],
+            "description": highlight['description'],
+            "img": "race_highlight.png"
+        }
 
     print("=== HIGLIGHTS === \n", highlights)
     return highlights
