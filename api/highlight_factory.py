@@ -1,9 +1,11 @@
 from api.highlights.perFight.highlight_death_counts_per_fight import highlight_death_counts_per_fight
 from api.highlights.perFight.highlight_solo_healing import highlight_solo_heal
 from api.highlights.perFight.highlight_solo_tanking import highlight_solo_tanking
+from api.highlights.perReport.highlight_class_distribution import highlight_class_distribution
 from api.highlights.perReport.highlight_death_from_potion import highlight_potion_death
 from api.highlights.perReport.highlight_died_the_most_times import highlight_died_the_most_times
 from api.highlights.perReport.highlight_first_death_per_raid import highlight_first_death_per_raid
+
 from api.highlights.perReport.highlight_less_trash_damage import highlight_less_trash_damage
 from api.highlights.perReport.highlight_max_healthstones import highlight_max_healthstones
 from api.highlights.perReport.highlight_pull_before_tanks import highlight_pull_before_tanks
@@ -29,6 +31,7 @@ def create_highlights(events_data, global_info_data):
     # Special Comp
     solo_heal_highlight = highlight_solo_heal(events_data, global_info_data)
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
+    class_distribution_highlight = highlight_class_distribution(events_data)
 
     # Return the highlights
     highlights = {}
@@ -38,7 +41,8 @@ def create_highlights(events_data, global_info_data):
             "player": pull_before_tanks_highlights["playerName"],
             "fight": pull_before_tanks_highlights["pullCount"],
             "sourceID": pull_before_tanks_highlights["playerID"],
-            "description": "Player pulled before tank the most",
+            "highlight_value": pull_before_tanks_highlights["pullCount"],
+            "description": pull_before_tanks_highlights["description"],
             "img": "Gnomish-grave-digger.jpg"
         }
 
@@ -98,10 +102,14 @@ def create_highlights(events_data, global_info_data):
             'img': 'elf-drinking.jpg'
         }
 
-    # Ajouter les highlights des morts par combat
-    for key, death_highlights in death_counts_highlights.items():
-        if death_highlights:
-            highlights[key] = death_highlights
+    if death_counts_highlights is not None:
+        for key, death_highlights in death_counts_highlights.items():
+            if not isinstance(death_highlights, list):
+                death_highlights = [death_highlights]
+
+            if death_highlights:
+                highlights[key] = death_highlights
+
 
     if first_death_highlights:
         highlights["first_death"] = first_death_highlights
@@ -118,5 +126,13 @@ def create_highlights(events_data, global_info_data):
     else:
         print("No solo healing highlight")
 
-    print("=== HIGLIGHTS === \n", highlights)
+    if class_distribution_highlight is not None:
+        highlights['distribution_classes'] = class_distribution_highlight
+    else:
+        print("No distribution class highlight")
+
+    print("=== HIGLIGHTS === \n")
+    for item in highlights:
+        print(item + " : " + str(highlights[item]))
+
     return highlights

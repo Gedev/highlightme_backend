@@ -50,6 +50,7 @@ def highlight_first_death_per_raid(events_data, global_info_data):
             "firstDeathCount": first_death_counts[top_player],
             "totalFights": total_fights,
             "percentage": top_percentage,
+            "highlight_value": top_percentage,
             "rarity": rarity,
             "description": f"{top_player} died first in {first_death_counts[top_player]} out of {total_fights} fights ({top_percentage:.2f}%)",
             "img": "Gnomish-grave-digger.jpg"

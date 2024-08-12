@@ -1,5 +1,4 @@
 def highlight_death_counts_per_fight(datas, global_info_data):
-    #TODO : Verify if this highlight, deaths per fight, is for kills ? Trashs ? Or both ?
     # Récupérer les combats
     fights = global_info_data['data']['reportData']['report']['fightsEncounters']
     death_events = datas['data']['reportData']['report']['deathEvents']['data']
@@ -9,13 +8,22 @@ def highlight_death_counts_per_fight(datas, global_info_data):
     target_id_to_name = {player['id']: player['name'] for player in composition}
 
     # Dictionnaire pour stocker les décès par joueur par combat
-    deaths_by_fight = {fight['id']: {} for fight in fights}
+    deaths_by_fight = {}
+
+    # Initialiser le dictionnaire deaths_by_fight pour chaque combat
+    for fight in fights:
+        fight_id = fight['id']
+        deaths_by_fight[fight_id] = {}
 
     # Compter les décès par joueur par combat
     for event in death_events:
         fight_id = event['fight']
         target_id = event['targetID']
-        player_name = target_id_to_name.get(target_id, "Unknown")
+
+        # Récupérer le nom du joueur, s'il n'existe pas, ajouter un log pour vérifier l'erreur potentielle
+        player_name = target_id_to_name.get(target_id)
+        if player_name is None:
+            player_name = f"Unknown (ID: {target_id})"
 
         if fight_id not in deaths_by_fight:
             deaths_by_fight[fight_id] = {}
@@ -26,34 +34,29 @@ def highlight_death_counts_per_fight(datas, global_info_data):
         deaths_by_fight[fight_id][player_name] += 1
 
     # Générer les highlights pour chaque combat
-    highlights = {"mort_3_fois": [], "mort_4_fois": [], "mort_5_fois": []}
+    highlights = []
 
     for fight_id, deaths in deaths_by_fight.items():
         for player, count in deaths.items():
-            if count >= 3:
-                if count == 3:
-                    highlights["mort_3_fois"].append({
-                        "fight": fight_id,
-                        "player": player,
-                        "deathCount": count,
-                        "description": f"{player} died {count} times in fight {fight_id}"
-                    })
+            if count == 3:
+                rarity = 'Rare'
                 if count == 4:
-                    highlights["mort_4_fois"].append({
-                        "fight": fight_id,
-                        "player": player,
-                        "deathCount": count,
-                        "description": f"{player} died {count} times in fight {fight_id}"
-                    })
-                if count == 5:
-                    highlights["mort_5_fois"].append({
-                        "fight": fight_id,
-                        "player": player,
-                        "deathCount": count,
-                        "description": f"{player} died {count} times in fight {fight_id}"
-                    })
+                    rarity = 'Epic'
+                elif count == 5:
+                    rarity = 'Legendary'
 
-    return highlights
+                highlight = {
+                    "fight_id": fight_id,
+                    "player": player,
+                    "highlight_value": count,
+                    "description": f"{player} died {count} times in fight {fight_id}",
+                    "img": "Gnomish-grave-digger.jpg",
+                    "rarity": rarity
+                }
+                highlights.append(highlight)
+
+    return highlights if highlights else None
+
 
 
 # Exemple d'utilisation
