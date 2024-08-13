@@ -5,6 +5,7 @@ from api.highlights.perReport.highlight_class_distribution import highlight_clas
 from api.highlights.perReport.highlight_death_from_potion import highlight_potion_death
 from api.highlights.perReport.highlight_died_the_most_times import highlight_died_the_most_times
 from api.highlights.perReport.highlight_first_death_per_raid import highlight_first_death_per_raid
+from api.highlights.perReport.highlight_guild_distribution import highlight_guild_distribution
 
 from api.highlights.perReport.highlight_less_trash_damage import highlight_less_trash_damage
 from api.highlights.perReport.highlight_max_healthstones import highlight_max_healthstones
@@ -32,6 +33,8 @@ def create_highlights(events_data, global_info_data):
     solo_heal_highlight = highlight_solo_heal(events_data, global_info_data)
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
     class_distribution_highlight = highlight_class_distribution(events_data)
+
+    guild_distribution_highlight = highlight_guild_distribution(global_info_data)
 
     # Return the highlights
     highlights = {}
@@ -130,6 +133,11 @@ def create_highlights(events_data, global_info_data):
         highlights['distribution_classes'] = class_distribution_highlight
     else:
         print("No distribution class highlight")
+
+    if guild_distribution_highlight is not None:
+        highlights['guild_distribution'] = guild_distribution_highlight
+    else:
+        print("No guild distribution highlight")
 
     print("=== HIGLIGHTS === \n")
     for item in highlights:

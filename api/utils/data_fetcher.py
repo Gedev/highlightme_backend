@@ -44,6 +44,13 @@ def fetch_global_info(warcraftlogcode, headers):
                 zone {{
                     name
                 }}
+                rankedCharacters {{
+                    guilds {{
+                        name
+                    }}
+                name
+                id
+                }}
             }}
         }}
     }}

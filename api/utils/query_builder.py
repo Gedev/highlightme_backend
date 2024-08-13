@@ -4,6 +4,7 @@ import requests
 
 logger = logging.getLogger('highlightme')
 
+
 class QueryBuilder:
     def __init__(self, warcraftlogcode, access_token):
         self.warcraftlogcode = warcraftlogcode
