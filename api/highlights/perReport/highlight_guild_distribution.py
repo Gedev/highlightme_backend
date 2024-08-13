@@ -1,7 +1,7 @@
 # api/highlights/perReport/highlight_guild_distribution.py
 from collections import Counter
 
-def highlight_guild_distribution(global_info_data):
+def highlight_guild_distribution(events_data, global_info_data):
     """
     Highlight the distribution of players by guilds in the raid.
     """

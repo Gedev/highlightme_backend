@@ -1,4 +1,4 @@
-def highlight_death_from_personal_ability(personal_ability):
+def highlight_death_from_personal_ability(personal_ability, global_info):
     # Identifier l'ID de l'ability liée à la mort par potion
     BURNING_RUSH_ABILITY_ID = 111400
 

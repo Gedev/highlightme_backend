@@ -1,4 +1,4 @@
-def highlight_lava_death(datas):
+def highlight_lava_death(datas, global_info):
     # Identifier l'ID de l'ability liée à la mort par lave
     LAVA_ABILITY_ID = 372339
 

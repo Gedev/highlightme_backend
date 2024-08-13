@@ -1,6 +1,6 @@
 # highlight_max_healthstones.py
 
-def highlight_max_healthstones(events_data):
+def highlight_max_healthstones(events_data, global_info):
     most_potions_player = {'name': '', 'potionUse': 0}
     most_healthstones_player = {'name': '', 'healthstoneUse': 0}
 

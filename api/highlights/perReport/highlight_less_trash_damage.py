@@ -1,4 +1,4 @@
-def highlight_less_trash_damage(events_data):
+def highlight_less_trash_damage(events_data, global_info):
     # Identifier les healers
     healers = {healer['name'] for healer in events_data['data']['reportData']['report']['table']['data']['playerDetails']['healers']}
 

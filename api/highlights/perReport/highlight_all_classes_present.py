@@ -1,6 +1,6 @@
 from api.enums.character_classes import CharacterClass
 
-def highlight_all_classes_present(events_data):
+def highlight_all_classes_present(events_data, global_info):
     """
     Highlight the group of players if all different classes are represented.
     """

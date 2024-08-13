@@ -1,4 +1,4 @@
-def highlight_died_the_most_times(datas):
+def highlight_died_the_most_times(datas, global_info):
 
     death_events = datas['data']['reportData']['report']['table']['data']['deathEvents']
 

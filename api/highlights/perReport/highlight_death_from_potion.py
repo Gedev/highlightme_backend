@@ -1,4 +1,4 @@
-def highlight_potion_death(datas):
+def highlight_potion_death(datas, global_info):
     # Identifier l'ID de l'ability liée à la mort par potion
     POTION_ABILITY_ID = 423416
 

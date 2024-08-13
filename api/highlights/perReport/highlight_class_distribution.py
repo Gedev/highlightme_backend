@@ -1,7 +1,7 @@
 from collections import Counter
 
 
-def highlight_class_distribution(events_data):
+def highlight_class_distribution(events_data, global_info):
     """
     Highlight both homogeneous and non-homogeneous class distributions,
     with rarity based on the number of classes present and their distribution.
@@ -9,7 +9,6 @@ def highlight_class_distribution(events_data):
 
     # Extract the composition of the players
     composition = events_data['data']['reportData']['report']['table']['data']['composition']
-    print("Composition : ", composition)
 
     # Count the occurrence of each class in the raid
     class_counts = Counter(player['type'] for player in composition)

@@ -5,7 +5,6 @@ from api.highlights.perReport.highlight_class_distribution import highlight_clas
 from api.highlights.perReport.highlight_death_from_potion import highlight_potion_death
 from api.highlights.perReport.highlight_died_the_most_times import highlight_died_the_most_times
 from api.highlights.perReport.highlight_first_death_per_raid import highlight_first_death_per_raid
-from api.highlights.perReport.highlight_guild_distribution import highlight_guild_distribution
 
 from api.highlights.perReport.highlight_less_trash_damage import highlight_less_trash_damage
 from api.highlights.perReport.highlight_max_healthstones import highlight_max_healthstones
@@ -13,28 +12,23 @@ from api.highlights.perReport.highlight_pull_before_tanks import highlight_pull_
 from api.highlights.perReport.highlight_lava_death import highlight_lava_death
 
 
-# api/highlight_factory.py
-
-
-def create_highlights(events_data, global_info_data):
+def create_highlights(events_data, global_info_data, difficulty):
     # Generate highlights
-    min_player, min_total = highlight_less_trash_damage(events_data)
-    most_potions_player, most_healthstones_player = highlight_max_healthstones(events_data)
+    min_player, min_total = highlight_less_trash_damage(events_data, global_info_data)
+    most_potions_player, most_healthstones_player = highlight_max_healthstones(events_data, global_info_data)
     pull_before_tanks_highlights = highlight_pull_before_tanks(events_data, global_info_data)
-    most_deaths_player_highlight = highlight_died_the_most_times(events_data)
+    most_deaths_player_highlight = highlight_died_the_most_times(events_data, global_info_data)
 
     # Generate highlights for special deaths
-    lava_death_highlight = highlight_lava_death(events_data)
-    potion_death_highlight = highlight_potion_death(events_data)
+    lava_death_highlight = highlight_lava_death(events_data, global_info_data)
+    potion_death_highlight = highlight_potion_death(events_data, global_info_data)
     death_counts_highlights = highlight_death_counts_per_fight(events_data, global_info_data)
     first_death_highlights = highlight_first_death_per_raid(events_data, global_info_data)
 
     # Special Comp
     solo_heal_highlight = highlight_solo_heal(events_data, global_info_data)
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
-    class_distribution_highlight = highlight_class_distribution(events_data)
-
-    guild_distribution_highlight = highlight_guild_distribution(global_info_data)
+    class_distribution_highlight = highlight_class_distribution(events_data, global_info_data)
 
     # Return the highlights
     highlights = {}
@@ -134,12 +128,7 @@ def create_highlights(events_data, global_info_data):
     else:
         print("No distribution class highlight")
 
-    if guild_distribution_highlight is not None:
-        highlights['guild_distribution'] = guild_distribution_highlight
-    else:
-        print("No guild distribution highlight")
-
-    print("=== HIGLIGHTS === \n")
+    print("=== HIGLIGHTS === " + difficulty + "\n")
     for item in highlights:
         print(item + " : " + str(highlights[item]))
 
