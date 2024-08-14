@@ -1,4 +1,5 @@
 from api.highlights.perFight.highlight_death_counts_per_fight import highlight_death_counts_per_fight
+from api.highlights.perFight.highlight_last_survivors import highlight_last_survivors
 from api.highlights.perFight.highlight_solo_healing import highlight_solo_heal
 from api.highlights.perFight.highlight_solo_tanking import highlight_solo_tanking
 from api.highlights.perReport.highlight_class_distribution import highlight_class_distribution
@@ -29,6 +30,8 @@ def create_highlights(events_data, global_info_data, difficulty):
     solo_heal_highlight = highlight_solo_heal(events_data, global_info_data)
     solo_tanking_highlight = highlight_solo_tanking(events_data, global_info_data)
     class_distribution_highlight = highlight_class_distribution(events_data, global_info_data)
+
+    last_survivors_highlight = highlight_last_survivors(events_data, global_info_data)
 
     # Return the highlights
     highlights = {}
@@ -127,6 +130,11 @@ def create_highlights(events_data, global_info_data, difficulty):
         highlights['distribution_classes'] = class_distribution_highlight
     else:
         print("No distribution class highlight")
+
+    if last_survivors_highlight is not None:
+        highlights['last_survivors'] = last_survivors_highlight
+    else:
+        print("No last survivors highlight")
 
     print("=== HIGLIGHTS === " + difficulty + "\n")
     for item in highlights:
