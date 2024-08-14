@@ -13,6 +13,8 @@ from api.highlights.perReport.highlight_lava_death import highlight_lava_death
 
 
 def create_highlights(events_data, global_info_data, difficulty):
+    composition = events_data['data']['reportData']['report']['table']['data']['composition']
+
     # Generate highlights
     min_player, min_total = highlight_less_trash_damage(events_data, global_info_data)
     most_potions_player, most_healthstones_player = highlight_max_healthstones(events_data, global_info_data)
@@ -128,8 +130,34 @@ def create_highlights(events_data, global_info_data, difficulty):
     else:
         print("No distribution class highlight")
 
+    # Add player class information to highlights
+    highlights = add_player_class_info(composition, highlights)
+
+
     print("=== HIGLIGHTS === " + difficulty + "\n")
     for item in highlights:
         print(item + " : " + str(highlights[item]))
+
+    return highlights
+
+
+def add_player_class_info(composition, highlights):
+    """
+    Add player class information to the highlights before saving.
+    """
+    # Create a mapping of player names to their class
+    player_class_map = {player['name']: player['type'] for player in composition}
+
+    # Enrich highlights with player class information
+    for highlight_type, details in highlights.items():
+        if isinstance(details, list):
+            for detail in details:
+                player_name = detail.get('player')
+                if player_name in player_class_map:
+                    detail['player_class'] = player_class_map[player_name]
+        else:
+            player_name = details.get('player')
+            if player_name in player_class_map:
+                details['player_class'] = player_class_map[player_name]
 
     return highlights

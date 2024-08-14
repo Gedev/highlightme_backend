@@ -24,6 +24,7 @@ class HighlightDetails(models.Model):
     type = models.ForeignKey(Highlight, on_delete=models.CASCADE)
     fight_id = models.IntegerField(null=True)
     player_name = models.CharField(max_length=255)
+    player_class = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     description = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
@@ -58,6 +59,7 @@ class HighlightLogs(models.Model):
 class IndividualHighlight(models.Model):
     report_id = models.CharField(max_length=255)
     player_name = models.CharField(max_length=255)
+    player_class = models.CharField(max_length=255)
     difficulty = models.IntegerField(choices=Difficulties.choices, null=True, blank=True)
 
     # Highlights for legendary parses
