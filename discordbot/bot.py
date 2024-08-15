@@ -45,6 +45,15 @@ async def highlight(interaction: discord.Interaction, report: str = None) -> Non
         await interaction.response.send_message("You must provide either a valid WarcraftLogs code or URL.", ephemeral=True)
         return
 
+    # Check if highlights already exist
+    existing_data = check_existing_highlights(code)
+
+    if existing_data.get('status') == 'exists':
+        frontend_url = existing_data.get('url')
+        response = f"Highlights for the report {code} already exist.\n[View Full Report]({frontend_url})"
+        await interaction.response.send_message(response)
+        return
+
     await interaction.response.send_message("Processing your request, this may take a few seconds...")
     initial_message = await interaction.original_response()
 
@@ -240,6 +249,18 @@ def send_to_backend(report_code: str, discord_pseudo: str) -> Dict[str, Any]:
     except requests.exceptions.RequestException as e:
         print(f"Failed to send report code to backend: {e}")
         return {}
+
+def check_existing_highlights(report_code: str) -> Dict[str, Any]:
+    backend_url = f"http://localhost:8000/report/check_highlights_existence/{report_code}"
+
+    try:
+        response = requests.get(backend_url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to check existing highlights for report code {report_code}: {e}")
+        return {}
+
 
 
 # STEP 5: MAIN ENTRY POINT

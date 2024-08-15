@@ -30,7 +30,7 @@ def translate(highlights, language="fr"):
 
 def get_highlights(request, **kwargs):
     try:
-        report_code = kwargs.get('reportcode')
+        report_code = kwargs.get('report_code')
         difficulty = request.GET.get('difficulty')
         if report_code:
             # Fetch combat highlights
@@ -69,4 +69,20 @@ def get_highlights(request, **kwargs):
     except Exception as e:
         # Capture and log any exceptions for better debugging
         # logger.error(f'Unexpected error in get_highlights: {e}')
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+def check_highlights_existence(request, report_code):
+    """
+    Vérifie si des highlights existent pour un report_code donné, indépendamment de la difficulté.
+    """
+    try:
+        # Vérification si les highlights existent déjà pour le report_code
+        if HighlightDetails.objects.filter(report_id=report_code).exists():
+            frontend_url = f"https://localhost:4200/report/{report_code}"
+            return JsonResponse({'status': 'exists', 'url': frontend_url})
+        else:
+            return JsonResponse({'status': 'not_exists'})
+
+    except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
