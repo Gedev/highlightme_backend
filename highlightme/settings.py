@@ -86,9 +86,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'highlightme.wsgi.application'
 
 
-ENVIRONMENT = config('ENVIRONMENT', default='development')
-
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 if ENVIRONMENT == 'production':
@@ -199,15 +196,24 @@ LOGGING = {
             'filters': ['ignore_mtime'],
         },
     },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO' if ENVIRONMENT == 'production' else 'DEBUG',
+    },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO' if ENVIRONMENT == 'production' else 'DEBUG',
             'propagate': True,
         },
         'api': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO' if ENVIRONMENT == 'production' else 'DEBUG',
+            'propagate': False,
+        },
+        'report': {
+            'handlers': ['console'],
+            'level': 'INFO' if ENVIRONMENT == 'production' else 'DEBUG',
             'propagate': False,
         },
         'django.utils.autoreload': {

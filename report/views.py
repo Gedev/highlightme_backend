@@ -1,9 +1,12 @@
+import logging
+
 from django.http import JsonResponse
 from api.models import HighlightDetails, IndividualHighlight
 import json
 
 from api.utils.difficulties import get_difficulty_name
 from report.translations import TRANSLATIONS
+logger = logging.getLogger('django.request')
 
 
 def detect_language(request):
@@ -29,6 +32,7 @@ def translate(highlights, language="fr"):
 
 
 def get_highlights(request, **kwargs):
+    logger.info({request})
     try:
         report_code = kwargs.get('report_code')
         difficulty = request.GET.get('difficulty')
