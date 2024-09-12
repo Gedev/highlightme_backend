@@ -116,6 +116,13 @@ client.tree.add_command(highlight)
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is now running !')
+
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} command(s).")
+    except Exception as e:
+        print(f"Error syncing commands: {e}")
+
     await client.tree.sync()
 
 
