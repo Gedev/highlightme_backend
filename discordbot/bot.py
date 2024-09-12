@@ -19,6 +19,17 @@ intents.message_content = True  # NOQA
 intents.guilds = True
 
 
+def run_bot():
+    client = discord.Client(intents=intents)
+
+    @client.event
+    async def on_ready():
+        print(f'We have logged in as {client.user}')
+
+    client.run(TOKEN)
+
+
+
 class MyClient(Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

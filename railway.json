@@ -9,6 +9,11 @@
         "npm run build",
         "python manage.py migrate"
       ]
+    },
+    {
+      "services": [
+        "discordbot"
+      ]
     }
   ],
   "deploys": [
@@ -19,6 +24,14 @@
       "commands": [
         "python manage.py migrate",
         "gunicorn highlightme.wsgi"
+      ]
+    },
+    {
+      "services": [
+        "discordbot"
+      ],
+      "commands": [
+        "python manage.py runbot"
       ]
     }
   ]
