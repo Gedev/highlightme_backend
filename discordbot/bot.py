@@ -37,6 +37,10 @@ class MyClient(Client):
 
 client: MyClient = MyClient(intents=intents)
 
+@client.tree.command(name="ping")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message(f"Pong! {round(client.latency * 1000)}ms")
+
 # Function to extract the WarcraftLogs code from the URL
 def extract_code_from_url(url: str) -> str:
     match = re.search(r'warcraftlogs.com/reports/([a-zA-Z0-9]+)', url)
