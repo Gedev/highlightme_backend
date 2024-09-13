@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import transaction
 
 from highlightme.enums.creation_status import CreationStatus
+from highlightme.settings import ENVIRONMENT
 from .highlight_factory import create_highlights
 from .highlights.rankings import display_player_parses, calculate_best_parse_averages
 from .services.report_analyser_service import analyze_report
@@ -35,6 +36,7 @@ print("Settings Warcraftlogs_oauth :", settings.WARCRAFTLOGS_OAUTH.get('access_t
 @transaction.atomic
 def index(request):
     print_start_message("HIGHLIGHT PROCESS : START")
+    print(ENVIRONMENT)
     try:
         request_data = json.loads(request.body.decode('utf-8'))
         warcraftlogcode = request_data.get('wl_report_code')

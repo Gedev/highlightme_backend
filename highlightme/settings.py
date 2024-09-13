@@ -99,7 +99,9 @@ if ENVIRONMENT == 'production':
             'PORT': config('PG_PORT', default='5432'),
         }
     }
+    BASE_URL = 'https://highlightmebackend-production.up.railway.app/api'
 else:
+    BASE_URL = 'http://localhost:8000'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
