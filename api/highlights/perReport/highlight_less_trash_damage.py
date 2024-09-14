@@ -8,7 +8,7 @@ def highlight_less_trash_damage(events_data, global_info):
 
     # Parcourir les entrées pour trouver le joueur avec le total le plus bas parmi les non-healers
     for entry in events_data['data']['reportData']['report']['table']['data']['damageDone']:
-        if entry['name'] not in healers:
+        if entry['name'] not in healers and entry['type'] != 'NPC':
             if entry['total'] < min_total:
                 min_total = entry['total']
                 min_player = entry['name']
