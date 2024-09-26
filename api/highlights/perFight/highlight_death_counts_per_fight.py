@@ -1,3 +1,6 @@
+from api.models import Boss
+
+
 def highlight_death_counts_per_fight(datas, global_info_data):
     # Récupérer les combats
     fights = global_info_data['data']['reportData']['report']['fightsEncounters']
@@ -35,8 +38,22 @@ def highlight_death_counts_per_fight(datas, global_info_data):
 
     # Générer les highlights pour chaque combat
     highlights = []
+    # boss_info = datas['data']['encounter']
+    # boss_id = boss_info['id']
 
     for fight_id, deaths in deaths_by_fight.items():
+        fight_info = None
+        for fight in fights:
+            if fight['id'] == fight_id:
+                fight_info = fight
+                break
+
+        if not fight_info:
+            continue
+
+        boss_id = fight_info['encounterID']
+
+
         for player, count in deaths.items():
             if count == 3:
                 rarity = 'Rare'
@@ -45,13 +62,18 @@ def highlight_death_counts_per_fight(datas, global_info_data):
                 elif count == 5:
                     rarity = 'Legendary'
 
+                boss, created = Boss.objects.get_or_create(id=boss_id, defaults={
+                    'zone_name': fight_info['gameZone']['name'],
+                })
+
                 highlight = {
                     "fight_id": fight_id,
                     "player": player,
                     "highlight_value": count,
                     "description": f"{player} died {count} times in fight {fight_id}",
                     "img": "Gnomish-grave-digger.jpg",
-                    "rarity": rarity
+                    "rarity": rarity,
+                    "boss_id": boss.id
                 }
                 highlights.append(highlight)
 

@@ -5,7 +5,6 @@ from api.highlights.perReport.highlight_class_distribution import highlight_clas
 from api.highlights.perReport.highlight_death_from_potion import highlight_potion_death
 from api.highlights.perReport.highlight_died_the_most_times import highlight_died_the_most_times
 from api.highlights.perReport.highlight_first_death_per_raid import highlight_first_death_per_raid
-
 from api.highlights.perReport.highlight_less_trash_damage import highlight_less_trash_damage
 from api.highlights.perReport.highlight_max_healthstones import highlight_max_healthstones
 from api.highlights.perReport.highlight_pull_before_tanks import highlight_pull_before_tanks

@@ -23,6 +23,7 @@ class HighlightDetails(models.Model):
     report_id = models.CharField(max_length=255)
     type = models.ForeignKey(Highlight, on_delete=models.CASCADE)
     fight_id = models.IntegerField(null=True)
+    boss_name = models.IntegerField(null=False, default=0)
     player_name = models.CharField(max_length=255)
     player_class = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -87,3 +88,24 @@ class IndividualHighlight(models.Model):
 
     def __str__(self):
         return f"{self.player_name} - {self.report_id} - Best DPS Rank Avg: {self.best_rank_avg_dps_parses}%, Best HPS Rank Avg: {self.best_rank_avg_hps_parses}%"
+
+
+class Boss(models.Model):
+    id = models.IntegerField(primary_key=True)
+    zone_name = models.CharField(max_length=255, null=True, blank=True)
+    expansion_name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.id} - {self.expansion_name}"
+
+
+class BossTranslation(models.Model):
+    boss = models.ForeignKey(Boss, related_name='translations', on_delete=models.CASCADE)
+    language_code = models.CharField(max_length=10)
+    translated_name = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('boss', 'language_code')  # Empêche les doublons pour la même langue et boss
+
+    def __str__(self):
+        return f"{self.translated_name} ({self.language_code})"
