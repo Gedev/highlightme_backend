@@ -11,11 +11,14 @@ from discord import Intents, Client, Message, File, app_commands, Interaction
 
 from api.utils.logger_console import print_start_message
 from highlightme import settings
+from highlightme.settings import ENVIRONMENT
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv("DISCORD_TOKEN")
 
 print("Discord Token : " + TOKEN)
+print(ENVIRONMENT)
+
 
 intents: Intents = Intents.default()
 intents.message_content = True  # NOQA
@@ -155,7 +158,7 @@ def run_bot():
             create_image_with_data(backend_data, filename)
 
             # frontend_url = f"{settings.BASE_URL}/report/{code}/difficulty/{difficulty}"
-            frontend_url = f"{settings.BASE_URL}/report/{code}/difficulty/1"
+            frontend_url = f"{settings.BASE_URL_FRONT}/report/{code}/difficulty/1"
             response = f"Preview of the Highlights for the report {code} has been created !\n[View Full Report]({frontend_url})"
             await interaction.followup.send(response, file=File(filename))
         else:
@@ -262,7 +265,7 @@ def send_to_backend(report_code: str, discord_pseudo: str) -> Dict[str, Any]:
         return {}
 
 def check_existing_highlights(report_code: str) -> Dict[str, Any]:
-    backend_url = f"{settings.BASE_URL}/report/check_highlights_existence/{report_code}"
+    backend_url = f"{settings.BASE_URL_FRONT}/report/check_highlights_existence/{report_code}"
 
     try:
         response = requests.get(backend_url)

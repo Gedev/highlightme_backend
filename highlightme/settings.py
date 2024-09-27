@@ -99,9 +99,11 @@ if ENVIRONMENT == 'production':
             'PORT': config('PG_PORT', default='5432'),
         }
     }
-    BASE_URL = 'https://highlightmebackend-production.up.railway.app/api'
+    BASE_URL = 'https://highlightmebackend-production.up.railway.app'
+    BASE_URL_FRONT = 'https://raid-highlights.netlify.app'
 else:
     BASE_URL = 'http://localhost:8000'
+    BASE_URL_FRONT = 'http://localhost:4200'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
