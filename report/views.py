@@ -36,35 +36,46 @@ def get_highlights(request, **kwargs):
     try:
         report_code = kwargs.get('report_code')
         difficulty = request.GET.get('difficulty')
-        if report_code:
-            # Fetch combat highlights
-            combat_highlights = HighlightDetails.objects.filter(report_id=report_code, difficulty=difficulty).values()
-            combat_highlights_list = list(combat_highlights)
 
-            # Fetch individual highlights
+        if report_code:
+            # Récupérer les highlights de fight
+            fight_highlights = HighlightDetails.objects.filter(report_id=report_code, difficulty=difficulty, fight_id__isnull=False).values()
+            fight_highlights_list = list(fight_highlights)
+
+            # Récupérer les highlights de raid
+            raid_highlights = HighlightDetails.objects.filter(report_id=report_code, difficulty=difficulty, fight_id__isnull=True).values()
+            raid_highlights_list = list(raid_highlights)
+
+            # Récupérer les highlights individuels
             individual_highlights = IndividualHighlight.objects.filter(report_id=report_code, difficulty=difficulty).values()
             individual_highlights_list = list(individual_highlights)
 
-            # Extract zone name and difficulty from combat highlights (assuming all have the same zone and difficulty)
-            if combat_highlights_list:
-                zone_name = combat_highlights_list[0].get('zone_name', 'Unknown Zone')
-                difficulty_value = combat_highlights_list[0].get('difficulty', 'Unknown Difficulty')
-                difficulty_name = get_difficulty_name(difficulty_value)
+            # Extraction du nom de la zone et difficulté à partir des fight highlights (ou raid si pas disponible)
+            if fight_highlights_list:
+                zone_name = fight_highlights_list[0].get('zone_name', 'Unknown Zone')
+                difficulty_value = fight_highlights_list[0].get('difficulty', 'Unknown Difficulty')
+            elif raid_highlights_list:
+                zone_name = raid_highlights_list[0].get('zone_name', 'Unknown Zone')
+                difficulty_value = raid_highlights_list[0].get('difficulty', 'Unknown Difficulty')
             else:
                 zone_name = 'Unknown Zone'
-                difficulty_name = 'Unknown Difficulty'
+                difficulty_value = 'Unknown Difficulty'
 
-            # Detect language and translate highlights
+            difficulty_name = get_difficulty_name(difficulty_value)
+
+            # Détection de la langue et traduction des highlights
             language = detect_language(request)
 
-            # Ensure translation function handles list of dicts properly
-            translated_combat_highlights = translate(combat_highlights_list, language=language)
+            # Traduire les highlights par type
+            translated_fight_highlights = translate(fight_highlights_list, language=language)
+            translated_raid_highlights = translate(raid_highlights_list, language=language)
 
             return JsonResponse({
                 "zone_name": zone_name,
                 "difficulty": difficulty_name,
-                "combat_highlights": translated_combat_highlights,
-                "individual_highlights": individual_highlights_list
+                "raid_highlights": translated_raid_highlights,  # Highlights de raid
+                "fight_highlights": translated_fight_highlights,  # Highlights par fight
+                "individual_highlights": individual_highlights_list  # Highlights individuels
             }, safe=False)
         else:
             return JsonResponse({'error': 'Report code not provided'}, status=400)
@@ -72,8 +83,9 @@ def get_highlights(request, **kwargs):
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
         # Capture and log any exceptions for better debugging
-        # logger.error(f'Unexpected error in get_highlights: {e}')
+        logger.error(f'Unexpected error in get_highlights: {e}')
         return JsonResponse({'error': str(e)}, status=500)
+
 
 
 def check_highlights_existence(request, report_code):
