@@ -51,6 +51,9 @@ def get_highlights(request, **kwargs):
             individual_highlights = IndividualHighlight.objects.filter(report_id=report_code, difficulty=difficulty).order_by("total_legendary_parses").values()
             individual_highlights_list = list(individual_highlights)
 
+            # Get all available difficulties for the report (unique values)
+            available_difficulties = HighlightDetails.objects.filter(report_id=report_code).values_list('difficulty', flat=True).distinct()
+
             # Extraction du nom de la zone et difficulté à partir des fight highlights (ou raid si pas disponible)
             if fight_highlights_list:
                 zone_name = fight_highlights_list[0].get('zone_name', 'Unknown Zone')
@@ -74,9 +77,10 @@ def get_highlights(request, **kwargs):
             return JsonResponse({
                 "zone_name": zone_name,
                 "difficulty": difficulty_name,
-                "raid_highlights": translated_raid_highlights,  # Highlights de raid
-                "fight_highlights": translated_fight_highlights,  # Highlights par fight
-                "individual_highlights": individual_highlights_list  # Highlights individuels
+                "raid_highlights": translated_raid_highlights,
+                "fight_highlights": translated_fight_highlights,
+                "individual_highlights": individual_highlights_list,
+                "available_difficulties": list(available_difficulties)
             }, safe=False)
         else:
             return JsonResponse({'error': 'Report code not provided'}, status=400)

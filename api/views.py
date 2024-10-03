@@ -66,7 +66,10 @@ def index(request):
         # Fetch and process all highlights
         all_highlights, lowest_difficulty = process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, report_owner, guild_name, realm, zone_name, discord_pseudo)
 
-        return JsonResponse({'status': 'success', 'highlights': all_highlights, 'lowest_difficulty': lowest_difficulty})
+        return JsonResponse({'status': 'success',
+                             'highlights': all_highlights,
+                             'lowest_difficulty': lowest_difficulty,
+                             })
 
     except json.JSONDecodeError as json_err:
         logger.error(f'Invalid JSON received in request body: {json_err}')
