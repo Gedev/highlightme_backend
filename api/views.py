@@ -64,9 +64,9 @@ def index(request):
         grouped_fights = analyze_report(fights)
 
         # Fetch and process all highlights
-        all_highlights = process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, report_owner, guild_name, realm, zone_name, discord_pseudo)
+        all_highlights, lowest_difficulty = process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, report_owner, guild_name, realm, zone_name, discord_pseudo)
 
-        return JsonResponse({'status': 'success', 'highlights': all_highlights})
+        return JsonResponse({'status': 'success', 'highlights': all_highlights, 'lowest_difficulty': lowest_difficulty})
 
     except json.JSONDecodeError as json_err:
         logger.error(f'Invalid JSON received in request body: {json_err}')
@@ -78,6 +78,7 @@ def index(request):
 
 def process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, report_owner, guild_name, realm, zone_name, discord_pseudo):
     all_highlights = {}
+    lowest_difficulty = None
 
     for difficulty_name, difficulty_fights in grouped_fights.items():
         try:
@@ -86,9 +87,13 @@ def process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, 
                 print(f"DEBUG MODE : mock_events.json stored in events_data for {difficulty_name}")
             else:
                 difficulty = next(iter(difficulty_fights), {}).get('difficulty', None)
+                print(difficulty)
                 if difficulty is None:
                     logger.error(f"Could not determine difficulty for fights: {difficulty_fights}")
                     raise ValueError('Difficulty not found for fights')
+                else:
+                    if lowest_difficulty is None or difficulty < lowest_difficulty:
+                        lowest_difficulty = difficulty
 
                 events_data = fetch_events(warcraftlogcode, headers, difficulty_fights, difficulty)
 
@@ -101,7 +106,7 @@ def process_all_difficulties(warcraftlogcode, grouped_fights, global_info_data, 
             logger.error(f'Error processing highlights for difficulty {difficulty_name}: {e}')
             raise  # Propagate the exception to trigger rollback
 
-    return all_highlights
+    return all_highlights, lowest_difficulty
 
 
 def process_highlights_for_difficulty(events_data, global_info_data, difficulty_name, warcraftlogcode, difficulty, report_owner, guild_name, realm, zone_name, discord_pseudo):

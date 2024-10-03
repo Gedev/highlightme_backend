@@ -48,7 +48,7 @@ def get_highlights(request, **kwargs):
             raid_highlights_list = list(raid_highlights)
 
             # Récupérer les highlights individuels
-            individual_highlights = IndividualHighlight.objects.filter(report_id=report_code, difficulty=difficulty).values()
+            individual_highlights = IndividualHighlight.objects.filter(report_id=report_code, difficulty=difficulty).order_by("total_legendary_parses").values()
             individual_highlights_list = list(individual_highlights)
 
             # Extraction du nom de la zone et difficulté à partir des fight highlights (ou raid si pas disponible)

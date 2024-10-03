@@ -156,9 +156,8 @@ def run_bot():
         if backend_data:
             filename = "report_preview.png"
             create_image_with_data(backend_data, filename)
-
-            # frontend_url = f"{settings.BASE_URL}/report/{code}/difficulty/{difficulty}"
-            frontend_url = f"{settings.BASE_URL_FRONT}/report/{code}/difficulty/1"
+            lowest_difficulty = backend_data.get('lowest_difficulty', 3)
+            frontend_url = f"{settings.BASE_URL_FRONT}/report/{code}/difficulty/{lowest_difficulty}"
             response = f"Preview of the Highlights for the report {code} has been created !\n[View Full Report]({frontend_url})"
             await interaction.followup.send(response, file=File(filename))
         else:
