@@ -12,6 +12,7 @@ from api.highlights.perReport.highlight_lava_death import highlight_lava_death
 
 
 def create_highlights(events_data, global_info_data, difficulty):
+    print("=== LAUNCH HIGHLIGHT FACTORY === " + difficulty + "\n")
     composition = events_data['data']['reportData']['report']['table']['data']['composition']
 
     # Generate highlights
@@ -133,7 +134,7 @@ def create_highlights(events_data, global_info_data, difficulty):
     highlights = add_player_class_info(composition, highlights)
 
 
-    print("=== HIGLIGHTS === " + difficulty + "\n")
+    print("\n=== HIGLIGHTS === " + difficulty + "\n")
     for item in highlights:
         print(item + " : " + str(highlights[item]))
 

@@ -62,7 +62,7 @@ class QueryBuilder:
         }}
         '''
         logger.debug(f"Generated GraphQL query: {full_query}")
-        print(full_query)
+        # print(full_query)
         return full_query
 
     def fetch_data(self):

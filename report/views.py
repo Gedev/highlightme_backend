@@ -5,6 +5,7 @@ from api.models import HighlightDetails, IndividualHighlight
 import json
 
 from api.utils.difficulties import get_difficulty_name
+from highlightme.settings import BASE_URL_FRONT
 from report.translations import TRANSLATIONS
 logger = logging.getLogger('django.request')
 
@@ -95,7 +96,7 @@ def check_highlights_existence(request, report_code):
     try:
         # Vérification si les highlights existent déjà pour le report_code
         if HighlightDetails.objects.filter(report_id=report_code).exists():
-            frontend_url = f"https://localhost:4200/report/{report_code}"
+            frontend_url = f"{BASE_URL_FRONT}/report/{report_code}"
             return JsonResponse({'status': 'exists', 'url': frontend_url})
         else:
             return JsonResponse({'status': 'not_exists'})
