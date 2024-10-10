@@ -52,7 +52,18 @@ def get_highlights(request, **kwargs):
             individual_highlights_list = list(individual_highlights)
 
             # Get all available difficulties for the report (unique values)
-            available_difficulties = HighlightDetails.objects.filter(report_id=report_code).values_list('difficulty', flat=True).distinct()
+            available_difficulties = sorted(HighlightDetails.objects.filter(report_id=report_code).values_list('difficulty', flat=True).distinct())
+
+            # Déterminer previousDifficulty et nextDifficulty
+            previous_difficulty = None
+            next_difficulty = None
+            difficulty = int(difficulty)  # Convertir la difficulté en entier pour comparaison
+            if difficulty in available_difficulties:
+                index = available_difficulties.index(difficulty)
+                if index > 0:
+                    previous_difficulty = available_difficulties[index - 1]
+                if index < len(available_difficulties) - 1:
+                    next_difficulty = available_difficulties[index + 1]
 
             # Extraction du nom de la zone et difficulté à partir des fight highlights (ou raid si pas disponible)
             if fight_highlights_list:
@@ -80,7 +91,9 @@ def get_highlights(request, **kwargs):
                 "raid_highlights": translated_raid_highlights,
                 "fight_highlights": translated_fight_highlights,
                 "individual_highlights": individual_highlights_list,
-                "available_difficulties": list(available_difficulties)
+                "available_difficulties": list(available_difficulties),
+                "previousDifficulty": previous_difficulty,
+                "nextDifficulty": next_difficulty
             }, safe=False)
         else:
             return JsonResponse({'error': 'Report code not provided'}, status=400)
